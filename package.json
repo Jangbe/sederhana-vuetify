@@ -14,7 +14,7 @@
         "axios": "^0.19",
         "bootstrap": "^4.0.0",
         "case-sensitive-paths-webpack-plugin": "^2.3.0",
-        "cross-env": "^7.0",
+        "cross-env": "^7.0.3",
         "deepmerge": "^4.2.2",
         "jquery": "^3.2",
         "laravel-mix": "^5.0.1",
@@ -22,15 +22,16 @@
         "popper.js": "^1.12",
         "resolve-url-loader": "^2.3.1",
         "sass": "^1.30.0",
-        "sass-loader": "^8.0.2",
+        "sass-loader": "^9.0.0",
         "vue": "^2.5.17",
         "vue-template-compiler": "^2.6.10"
     },
     "dependencies": {
         "vue-router": "^3.4.9",
-        "vuetify": "^2.3.0",
         "vue-sweetalert2": "^3.0.8",
-        "vuetify-loader": "^1.4.3",
+        "vue-toasted": "^1.1.28",
+        "vuetify": "^2.3.0",
+        "vuetify-loader": "^1.5.0",
         "vuex": "^3.5.1"
     }
 }
