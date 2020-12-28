@@ -37,7 +37,10 @@ class Product extends Model
         $detail_nama = explode('-', $produk->detail_nama);
         $detail = [];
         for($i = 0; $i < count($detail_stok); $i++){
-            $detail[$detail_nama[$i]] = $detail_stok[$i];
+            $detail[$detail_nama[$i]] = 1;
+            for($a = count($detail_nama); $a > $i; $a--){
+                $detail[$detail_nama[$i]] *= $detail_stok[$a-1];
+            }
         }
         $data['hasil'] = 0;
         $i = 0;

@@ -7,7 +7,7 @@
             </v-col>
             <v-col md="9">
                 <form action="#" method="post" @submit.prevent="cart">
-                <v-card>
+                <v-card :loading="loading">
                     <v-row no-gutters>
                         <v-col cols="12" md="5">
                             <v-img max-height="400" :src="`/img/barang/${product.gambar}`"></v-img>
@@ -37,14 +37,14 @@
                             <v-card-text>
                                 <v-row dense>
                                     <v-col :cols="12/product.stok.lenght" v-for="(value, name) in product.stok" :key="name">
-                                        <v-text-field type="number" min="0" @keyup="cekHarga(form.detail)" @change="cekHarga(form.detail)" :label="name" v-model="form.detail[name]"></v-text-field>
+                                        <v-text-field type="number" min="0" :max="value" @keyup="cekHarga(form.detail)" @change="cekHarga(form.detail)" :label="name" v-model="form.detail[name]"></v-text-field>
                                     </v-col>
                                 </v-row>
                             </v-card-text>
 
                             <v-card-actions>
                             <v-btn color="primary" text type="submit">
-                                Tambahkan Ke Keranjang
+                                <v-icon left>mdi-cart-arrow-down</v-icon>Tambahkan Ke Keranjang
                             </v-btn>
                             </v-card-actions>
                         </v-col>
@@ -63,6 +63,7 @@ export default {
   components: { Cart },
     data(){
         return{
+            loading: false,
             product: {},
             form: {
                 id: '',
@@ -79,7 +80,7 @@ export default {
     },
     methods: {
         getProduct(){
-            // this.number_format = number_format;
+            this.number_format = number_format;
             axios.get(`/api/product/index/${this.$route.params.id}/show`).then((data) => {
                 this.product = data.data.data;
                 this.harga = this.product.harga;
@@ -87,6 +88,7 @@ export default {
             });
         },
         async cart(){
+            this.loading = true;
             this.form.id = this.product.id;
             var response = await axios.post('/api/keranjang/make', this.form);
             this.hasChange++;
@@ -94,6 +96,7 @@ export default {
                 type: response.data.type,
                 duration: 2000
             });
+            this.loading = false;
         },
         cekHarga(detail){
             var rincian = this.product.rincian;

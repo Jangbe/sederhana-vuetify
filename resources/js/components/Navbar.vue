@@ -1,13 +1,13 @@
 <template>
 <nav>
     <v-app-bar app dark color="cyan">
-        <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
-        <v-toolbar-title>Sederhana Shop</v-toolbar-title>
+        <v-app-bar-nav-icon @click="drawer = !drawer" class="d-flex d-md-none"></v-app-bar-nav-icon>
+        <v-toolbar-title class="bold">Sederhana Shop</v-toolbar-title>
         <v-spacer></v-spacer>
-            <v-btn text>
-                <span>Logout</span>
-                <v-icon right>mdi-logout</v-icon>
-            </v-btn>
+        <v-btn text v-for="link in links" :key="link.text" :to="link.route" class="d-none d-md-flex">
+            <v-icon class="font-weight-bold" left v-text="link.icon"></v-icon>
+            <strong v-text="link.text"></strong>
+        </v-btn>
     </v-app-bar>
     <v-navigation-drawer temporary app v-model="drawer" dark>
         <v-list dense>

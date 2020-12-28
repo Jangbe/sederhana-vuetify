@@ -28,17 +28,42 @@
     </li>
 </ul>
 </div> -->
-  <v-card max-width="300" tile>
-    <v-list shaped>
-      <v-subheader>Kejanjang</v-subheader>
-      <v-list-item-group v-model="selectedItem" color="primary" >
+  <v-card tile>
+    <v-list>
+      <v-subheader><v-icon left>mdi-cart-arrow-right</v-icon>Keranjang</v-subheader>
+      <v-divider></v-divider>
+      <template v-if="isThere">
         <v-list-item v-for="(item, i) in carts.product" :key="i">
-            <!-- <v-list-item-icon><v-icon v-text="item.icon"></v-icon></v-list-item-icon> -->
             <v-list-item-content>
-                <v-list-item-title v-text="item.data.nama_barang"></v-list-item-title>
+                <v-list-item-title class="d-flex justify-space-between">
+                    <span class="pt-2">
+                        {{item.jumlah+' '+item.data.nama_barang}} ({{item.jumlah +' x '+ number_format(item.data.harga_barang)}})
+                    </span>
+                    <v-btn text class="red--text" @click="hapus(item.data.id_product)">
+                        <v-icon>mdi-cart-remove</v-icon>
+                    </v-btn>
+                </v-list-item-title>
             </v-list-item-content>
         </v-list-item>
-      </v-list-item-group>
+      <v-divider></v-divider>
+      </template>
+      <template v-else>
+          <v-list-item>
+              <v-list-item-content>
+                  <v-list-item-title class="d-flex justify-center red--text">
+                      Keranjang masih kosong
+                  </v-list-item-title>
+              </v-list-item-content>
+          </v-list-item>
+      </template>
+      <v-divider></v-divider>
+      <v-list-item>
+          <v-list-item-content>
+              <v-list-item-title>
+                  Jumlah : {{carts.jumlah}} item | Rp. {{ number_format(carts.harga) }}
+              </v-list-item-title>
+          </v-list-item-content>
+      </v-list-item>
     </v-list>
   </v-card>
 </template>
@@ -52,7 +77,6 @@ export default {
             isThere: false,
             number_format,
             count: 0,
-            selectedItem: 1
         }
     },
     watch:{

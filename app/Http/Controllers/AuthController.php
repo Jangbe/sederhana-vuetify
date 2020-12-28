@@ -22,7 +22,7 @@ class AuthController extends Controller
                 ['icon' => 'mdi-home', 'text' => 'Home', 'route' => '/'],
                 ['icon' => 'mdi-cog', 'text' => 'About', 'route' => '/about'],
                 ['icon' => 'mdi-cart-plus', 'text' => 'Belanja', 'route' => '/belanja'],
-                ['icon' => 'mdi-cart', 'text' => 'Keranjang', 'route' => '/keranjang'],
+                ['icon' => 'mdi-cart-check', 'text' => 'Checkout', 'route' => '/keranjang'],
                 ['icon' => 'mdi-account', 'text' => 'Profile', 'route' => '/profile'],
                 ['icon' => 'mdi-logout', 'text' => 'Logout', 'route' => '/logout'],
             ],
@@ -30,7 +30,7 @@ class AuthController extends Controller
                 ['icon' => 'mdi-home', 'text' => 'Home', 'route' => '/'],
                 ['icon' => 'mdi-cog', 'text' => 'About', 'route' => '/about'],
                 ['icon' => 'mdi-cart-plus', 'text' => 'Belanja', 'route' => '/belanja'],
-                ['icon' => 'mdi-cart', 'text' => 'Keranjang', 'route' => '/keranjang'],
+                ['icon' => 'mdi-cart-check', 'text' => 'Checkout', 'route' => '/keranjang'],
                 ['icon' => 'mdi-account-plus', 'text' => 'Daftar', 'route' => '/auth/signup'],
                 ['icon' => 'mdi-login', 'text' => 'Login', 'route' => '/auth/signin'],
             ]
