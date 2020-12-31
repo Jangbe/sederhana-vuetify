@@ -14,38 +14,32 @@ class AuthController extends Controller
     {
         $routes = [
             [//For admin
-                ['icon' => 'mdi-dashboard', 'text' => 'Dashboard', 'route' => '/admin/pesanan'],
-                ['icon' => 'mdi-', 'text' => 'Buat Struk', 'route' => '/admin/struct'],
-                ['icon' => 'mdi-', 'text' => 'Buat Struk', 'route' => '/admin/struct']
+                ['icon' => 'mdi-view-dashboard', 'text' => 'Dashboard', 'route' => '/admin/pesanan'],
+                ['icon' => 'mdi-note', 'text' => 'Buat Struk', 'route' => '/admin/struct']
             ],
-            [//For user login
+            [//For user login/not logged in
                 ['icon' => 'mdi-home', 'text' => 'Home', 'route' => '/'],
                 ['icon' => 'mdi-cog', 'text' => 'About', 'route' => '/about'],
                 ['icon' => 'mdi-cart-plus', 'text' => 'Belanja', 'route' => '/belanja'],
-                ['icon' => 'mdi-cart-check', 'text' => 'Checkout', 'route' => '/keranjang'],
-                ['icon' => 'mdi-account', 'text' => 'Profile', 'route' => '/profile'],
-                ['icon' => 'mdi-logout', 'text' => 'Logout', 'route' => '/logout'],
-            ],
-            [//For user not logged in
-                ['icon' => 'mdi-home', 'text' => 'Home', 'route' => '/'],
-                ['icon' => 'mdi-cog', 'text' => 'About', 'route' => '/about'],
-                ['icon' => 'mdi-cart-plus', 'text' => 'Belanja', 'route' => '/belanja'],
-                ['icon' => 'mdi-cart-check', 'text' => 'Checkout', 'route' => '/keranjang'],
-                ['icon' => 'mdi-account-plus', 'text' => 'Daftar', 'route' => '/auth/signup'],
-                ['icon' => 'mdi-login', 'text' => 'Login', 'route' => '/auth/signin'],
+                ['icon' => 'mdi-cart-check', 'text' => 'Checkout', 'route' => '/keranjang']
             ]
         ];
         if(Auth::user()){
+            if(Auth::user()->role == 1){
+               $route = $routes[0];
+            }else{
+               $route = $routes[1];
+            }
             return response()->json([
                 'isLogin' => true,
                 'user' => Auth::user(),
-                'links' => $routes[1]
+                'links' => $route
             ]);
         }else{
             return response()->json([
                 'isLogin' => false,
                 'user' => [],
-                'links' => $routes[2]
+                'links' => $routes[1]
             ]);
         }
     }

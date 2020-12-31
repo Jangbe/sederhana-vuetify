@@ -3,7 +3,7 @@
         <v-row>
             <v-col md="3" class="d-none d-md-block">
                 <kategori :active="active"></kategori>
-                <cart :hasChange="hasChange"></cart>
+                <cart></cart>
             </v-col>
             <v-col md="9">
                 <form action="#" method="post" @submit.prevent="cart">
@@ -37,7 +37,7 @@
                             <v-card-text>
                                 <v-row dense>
                                     <v-col :cols="12/product.stok.lenght" v-for="(value, name) in product.stok" :key="name">
-                                        <v-text-field type="number" min="0" :max="value" @keyup="cekHarga(form.detail)" @change="cekHarga(form.detail)" :label="name" v-model="form.detail[name]"></v-text-field>
+                                        <v-text-field type="number" min="0" :max="value" @keyup="cekHarga(form.detail)" @change="cekHarga(form.detail)" :label="name" v-model="form.detail[name]" autocomplete="false"></v-text-field>
                                     </v-col>
                                 </v-row>
                             </v-card-text>
@@ -71,7 +71,6 @@ export default {
             },
             active: '',
             number_format,
-            hasChange: 0,
             harga: 0,
         }
     },
@@ -91,11 +90,18 @@ export default {
             this.loading = true;
             this.form.id = this.product.id;
             var response = await axios.post('/api/keranjang/make', this.form);
-            this.hasChange++;
-            this.$toasted.show(response.data.message, {
-                type: response.data.type,
-                duration: 2000
+            axios.get('/api/keranjang/get').then(data => {
+                 this.$store.commit('editCart', data.data)
             });
+            this.$swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: response.data.type,
+                title: response.data.message,
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+            })
             this.loading = false;
         },
         cekHarga(detail){

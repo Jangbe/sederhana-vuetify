@@ -6,12 +6,12 @@
                 <cart></cart>
             </v-col>
             <v-col cols="12" md="9">
-                <v-form v-if="isThere" action="#" method="post" @submit.prevent="store" lazy-validation>
+                <v-form v-if="carts.count > 0" action="#" method="post" @submit.prevent="store" lazy-validation>
                     <v-row dense>
                         <v-col cols="12" md="6">
                             <v-text-field @focus="hasErrors.nama = ''" outlined v-model="input.nama" :error-messages="hasErrors.nama" label="nama" color="cyan" :counter="11"></v-text-field>
                             <v-text-field @focus="hasErrors.email = ''" outlined v-model="input.email" :error-messages="hasErrors.email" color="cyan" label="email" type="email"></v-text-field>
-                            <v-text-field @focus="hasErrors.notel = ''" outlined v-model="input.notel" :error-messages="hasErrors.notel" color="cyan" label="No Telepon" type="number" :counter="11" min="0"></v-text-field>
+                            <v-text-field @focus="hasErrors.notel = ''" outlined v-model="input.notel" :error-messages="hasErrors.notel" color="cyan" label="No Telepon" type="number" :counter="13" min="0"></v-text-field>
                         </v-col>
                         <v-col cols="12" md="6" class="border-left">
                             <v-text-field @focus="hasErrors.alamat = ''" outlined v-model="input.alamat" :error-messages="hasErrors.alamat" color="cyan" label="Alamat"></v-text-field>
@@ -60,10 +60,8 @@ export default {
                 catatan: '',
                 alamat: '',
                 metode: '',
-                carts: {}
             },
             hasErrors: {},
-            carts: {},
             isLogin: false,
             number_format,
             metode: [
@@ -75,16 +73,19 @@ export default {
             ],
         }
     },
-    watch: {
-        cart: function () {
-            this.getCarts;
+    mounted(){
+        this.getUser();
+        this.init();
+    },
+    computed: {
+        carts(){
+           return this.$store.state.carts
         }
     },
-    mounted(){
-        this.getCarts();
-        this.getUser();
-    },
     methods:{
+        init(){
+           this.number_format = number_format;
+        },
         getUser(){
             axios.get('/api/auth/init').then(user => {
                 this.user = user.data.user;
@@ -100,18 +101,6 @@ export default {
                 }
             });
         },
-        getCarts(){
-            axios.get('/api/keranjang/get').then((data) => {
-                this.number_format = number_format;
-                this.count = data.data.count;
-                if (data.data.count == 0) {
-                    this.isThere = false;
-                }else{
-                    this.isThere = true;
-                }
-                this.carts = data.data.product;
-            });
-        },
 
         async store(){
             try{
@@ -124,10 +113,15 @@ export default {
                 this.input.alamat = '';
                 this.input.catatan = '';
                 this.input.metode = '';
-                this.$toasted.show(respon.data.message, {
-                    duration: 5000,
-                    type: respon.data.type
-                });
+                this.$swal.fire({
+                  title: '<strong>Barang berhasil dikonfirmasi</strong>',
+                  icon: respon.data.type,
+                  html: respon.data.message,
+focusConfirm: false,
+confirmButtonText:
+'<i class="fa fa-thumbs-up"></i> Confirm!',
+confirmButtonAriaLabel: 'Thumbs up, great!',
+})
                 this.$router.push('/belanja');
             }catch(e){
                 this.hasErrors = e.response.data.errors;

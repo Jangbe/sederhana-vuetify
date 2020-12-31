@@ -8,7 +8,7 @@
         </button>
     </li>
     <div class="collapse show" id="keranjang1">
-        <section v-if="isThere">
+        <section v-if="carts.count > 0">
             <li class="list-group-item"  v-for="cart in carts.product" :key="cart.data.id_product">
                 {{cart.jumlah}} <b v-text="cart.data.nama_barang"></b> {{`(${cart.jumlah} x ${number_format(cart.data.harga_barang)})`}}
                 <button :ref="cart.data.id" type="button" class="close" @click="hapus(cart.data.id_product)">
@@ -32,7 +32,7 @@
     <v-list>
       <v-subheader><v-icon left>mdi-cart-arrow-right</v-icon>Keranjang</v-subheader>
       <v-divider></v-divider>
-      <template v-if="isThere">
+      <template v-if="carts.count > 0">
         <v-list-item v-for="(item, i) in carts.product" :key="i">
             <v-list-item-content>
                 <v-list-item-title class="d-flex justify-space-between">
@@ -70,43 +70,53 @@
 <script>
 import number_format from '../number_format';
 export default {
-    props: ['hasChange'],
     data(){
         return{
-            carts: {},
-            isThere: false,
-            number_format,
-            count: 0,
+            number_format
         }
     },
-    watch:{
-        count: function(){this.getCarts()},
-        hasChange: function(){this.getCarts()}
+    computed: {
+        carts(){
+            return this.$store.state.carts;
+        }
     },
     mounted(){
-        this.getCarts();
+        this.init();
     },
     methods:{
+        init(){
+           this.number_format = number_format;
+        },
         hapus(id){
-            axios.get(`/api/keranjang/hapus/${id}`).then((respon) =>{
-                this.$toasted.show(respon.data.message, {
-                    duration: 2000,
-                    type: respon.data.type
-                });
-            });
-            this.count--;
+           this.$swal.fire({
+             title: 'Apakah kamu yakin?',
+             text: "Jika iya, tekan tombol 'Ya'!",
+             icon: 'warning',
+             showCancelButton: true,
+             confirmButtonColor: '#3085d6',
+             cancelButtonColor: '#d33',
+             confirmButtonText: 'Ya'
+           }).then((result) => {
+             if (result.isConfirmed) {
+              axios.get(`/api/keranjang/hapus/${id}`).then((respon) =>{
+                this.$swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: respon.data.type,
+                    title: respon.data.message,
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                })
+               });
+               this.getCarts();
+             }
+          })
         },
 
         getCarts(){
             axios.get('/api/keranjang/get').then((data) => {
-                this.number_format = number_format;
-                this.count = data.data.count;
-                if (data.data.count == 0) {
-                    this.isThere = false;
-                }else{
-                    this.isThere = true;
-                }
-                this.carts = data.data;
+                this.$store.commit('editCart', data.data);
             });
         }
     }

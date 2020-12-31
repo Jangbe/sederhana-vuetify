@@ -73,7 +73,7 @@ class CartController extends Controller
     public function store()
     {
         request()->validate([
-            'nama' => 'required',
+            'nama' => 'required|max:11',
             'email' => 'required|email|unique:buyers,email',
             'notel' => 'required|min:8|max:13',
             'alamat' => 'required',
@@ -115,7 +115,7 @@ class CartController extends Controller
         ]);
 
         return response()->json([
-            'message' => 'Barang sedang diproses, kode transaksi anda adalah '.$id_transaction.'. kode juga sudah dikirim ke alamat email kamu, silahkan cek.',
+            'message' => 'Kode transaksi anda adalah <b>'.$id_transaction.'</b>. kode juga sudah dikirim ke alamat email kamu, silahkan cek.',
             'type' => 'success'
         ]);
     }
