@@ -23,7 +23,7 @@ Route::prefix('keranjang')->group(function(){
     Route::patch('store', [CartController::class, 'store']);
 });
 
-Route::prefix('admin')->group(function(){
+Route::prefix('admin')->middleware('role:1')->group(function(){
     Route::get('getCarts/{id_buyer?}', [AdminController::class, 'getCarts']);
     Route::get('struct/{search?}', [AdminController::class, 'struct']);
     Route::post('make', [AdminController::class, 'make']);

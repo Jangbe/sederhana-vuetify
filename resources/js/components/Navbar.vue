@@ -37,8 +37,8 @@
                 </v-list-item-avatar>
 
                 <v-list-item-content>
-                    <v-list-item-title>Unknow</v-list-item-title>
-                    <v-list-item-subtitle>No Logged In</v-list-item-subtitle>
+                    <v-list-item-title v-text="user.name"></v-list-item-title>
+                    <v-list-item-subtitle>{{ isLogin? user.email : 'Not Logged In' }}</v-list-item-subtitle>
                 </v-list-item-content>
             </v-list-item>
             <v-divider></v-divider>
@@ -99,6 +99,9 @@ export default{
         isLogin(){
            return this.$store.state.isLogin;
         },
+        user(){
+           return this.$store.state.user;
+        }
     },
     methods: {
             logout(){
@@ -115,6 +118,7 @@ export default{
                 });
                 axios.get('/api/auth/init').then(res => {        
                   this.$store.commit('logout', res.data.links);
+                  this.$store.commit('userInit', res.data.user);
                 });
                 this.$router.push('/belanja');
             }

@@ -107,6 +107,7 @@ export default {
     },
     methods: {
         async getCarts(){
+          try{
             var id_buyer = this.id_buyer ? this.id_buyer : '';
             var response = await axios.get(`/api/admin/getCarts/${id_buyer}`);
             this.carts = response.data.data;
@@ -114,6 +115,9 @@ export default {
             for(var key in this.carts){
                 this.kelas[key] = kelas[this.carts[key].kode_pesan -1];
             }
+          }catch(e){
+             this.$router.push('/');
+          }
         }
     }
 }

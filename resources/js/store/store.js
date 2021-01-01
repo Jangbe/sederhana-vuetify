@@ -22,6 +22,9 @@ export const store = new Vuex.Store({
          },
      },
      mutations: {
+         userInit: (state, payload) => {
+              state.user = payload;
+         },
          changeName: (state, payload) => {
               state.name = payload;
          },

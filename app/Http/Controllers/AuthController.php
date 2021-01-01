@@ -38,7 +38,7 @@ class AuthController extends Controller
         }else{
             return response()->json([
                 'isLogin' => false,
-                'user' => [],
+                'user' => [ 'name'=>'Unknow'],
                 'links' => $routes[1]
             ]);
         }

@@ -21,6 +21,7 @@ export default{
                links: res.data.links
              }
            );
+           this.$store.commit('userInit', res.data.user);
          });
          axios.get('/api/keranjang/get').then(data => {
             this.$store.commit('editCart', data.data);

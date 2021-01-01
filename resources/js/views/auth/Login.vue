@@ -47,6 +47,7 @@ export default {
                 if (response.data.type == 'success') {
                     axios.get('/api/auth/init').then(res => {
                       this.$store.commit('login', res.data.links);
+                      this.$store.commit('userInit', res.data.user);
                     });
                     if (response.data.role == 1) {
                         this.$router.push('/admin/pesanan');
