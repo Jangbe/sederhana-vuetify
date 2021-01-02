@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('product')->group(function(){
     Route::get('index/{category?}', [ProductController::class,'index']);
     Route::get('index/{id:id_product}/show', [ProductController::class,'show']);
+    Route::get('search/{category}/{id}', [ProductController::class,'search']);
 });
 
 Route::prefix('kategori')->group(function(){

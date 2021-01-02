@@ -1,12 +1,16 @@
 <template>
     <v-container class="mt-3">
         <v-row>
+            <v-col cols="12">
+                <v-text-field dense hide-details="" outlined rounded v-model="vsearch" @keyup="search" append-icon="mdi-magnify" label="Cari barang" @click:append="search()"></v-text-field>
+            </v-col>
             <v-col md="3" cols="12" class="d-none d-md-block">
                 <kategori :active="active"></kategori>
                 <cart></cart>
             </v-col>
             <v-col md="9" cols="12">
                 <v-row>
+                    <template v-if="products.length > 0">
                     <v-col cols="6" md="3" v-for="product in products" :key="product.id">
                             <v-card>
                                 <router-link :to="{name: 'product.detail', params: {id: product.id, category: product.slug}}" style="text-decoration: none">
@@ -28,6 +32,15 @@
                                 </v-card-actions>
                             </v-card>
                     </v-col>
+                    </template>
+                    <template v-else>
+                        <v-col cols="12">
+                            <v-alert color="warning" outlined>
+                                <v-icon>mdi-info</v-icon>
+                                Tidak ditemukan barang!
+                            </v-alert>
+                        </v-col>
+                    </template>
                 </v-row>
             </v-col>
         </v-row>
@@ -42,6 +55,7 @@ export default {
         return{
             products: {},
             active: '',
+            vsearch: ''
         }
     },
     watch:{
@@ -59,8 +73,17 @@ export default {
             this.active = category;
             axios.get(`/api/product/index/${category}`).then((response) => {
                 this.products = response.data.data;
-                // console.log(this.category);
             });
+        },
+        search(){
+            var category = this.category ? this.category : 'all';
+            if(this.vsearch){
+                axios.get(`/api/product/search/${category}/${this.vsearch}`).then(res => {
+                    this.products = res.data.data
+            });
+            }else{
+                this.getProducts();
+            }
         }
     }
 }

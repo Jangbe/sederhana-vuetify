@@ -16,17 +16,10 @@
                         <v-col cols="12" md="6" class="border-left">
                             <v-text-field @focus="hasErrors.alamat = ''" outlined v-model="input.alamat" :error-messages="hasErrors.alamat" color="cyan" label="Alamat"></v-text-field>
                             <v-select @focus="hasErrors.metode = ''" outlined v-model="input.metode" :error-messages="hasErrors.metode" color="cyan" :items="metode" :item-text="metode.text" :item-value="metode.value" label="Metode"></v-select>
-                            <v-textarea outlined v-model="input.catatan" label="Catatan"></v-textarea>
+                            <v-textarea hide-details="" outlined v-model="input.catatan" label="Catatan"></v-textarea>
                         </v-col>
                     </v-row>
-                    <div class="form-group">
-                        <div class="input-group mt-3 mt-md-3" id="btn-kirim">
-                            <!-- <div class="card col-12 mb-3 border-info text-info text-center mt-1">
-                                <div class="card-body py-2">Total item : <span id="total-item">{{}}</span> | Total berat : <span id="total-berat">{{$jumlah_berat}} kg</span> <br> Ongkir : <span id="ongkir"></span> | Total harga : Rp. <span id="total-harga">{{number_format($total_harga)}}</span></div>
-                            </div> -->
-                            <v-btn color="success" outlined class="col-12 text-center" type="submit">Kirim ke keranjang</v-btn>
-                        </div>
-                    </div>
+                    <v-btn color="success" outlined class="col-12 text-center mt-3" type="submit">Kirim ke keranjang</v-btn>
                 </v-form>
                 <v-alert v-else class="text-center" color="warning" outlined>
                     <span class="text-center">Keranjang masih kosong, silahkan pilih dulu barang jika ingin berbelanja</span>
@@ -114,14 +107,14 @@ export default {
                 this.input.catatan = '';
                 this.input.metode = '';
                 this.$swal.fire({
-                  title: '<strong>Barang berhasil dikonfirmasi</strong>',
-                  icon: respon.data.type,
-                  html: respon.data.message,
-focusConfirm: false,
-confirmButtonText:
-'<i class="fa fa-thumbs-up"></i> Confirm!',
-confirmButtonAriaLabel: 'Thumbs up, great!',
-})
+                    title: '<strong>Barang berhasil dikonfirmasi</strong>',
+                    icon: respon.data.type,
+                    html: respon.data.message,
+                    focusConfirm: false,
+                    confirmButtonText:
+                    '<v-icon>mdi-thumbs-up</v-icon> Confirm!',
+                    confirmButtonAriaLabel: 'Thumbs up, great!',
+                })
                 this.$router.push('/belanja');
             }catch(e){
                 this.hasErrors = e.response.data.errors;

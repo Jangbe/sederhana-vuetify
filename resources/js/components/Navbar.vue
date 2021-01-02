@@ -28,6 +28,9 @@
             <strong>Login</strong>
         </v-btn>
        </template>
+        <v-btn text @click="drawer = !drawer" class="d-flex d-md-none">
+            <v-icon>mdi-shape</v-icon>
+        </v-btn>
     </v-app-bar>
     <v-navigation-drawer temporary app v-model="drawer" dark>
         <v-list dense>
@@ -52,32 +55,32 @@
                     <v-list-item-title v-text="link.text"></v-list-item-title>
                 </v-list-item>
                 <template v-if="isLogin">
-                  <v-list-item to="/profile">
-                      <v-list-item-icon>
-                      <v-icon>mdi-account</v-icon>
-                      </v-list-item-icon>
-                      <v-list-item-title>Profile</v-list-item-title>
-                  </v-list-item>
-                  <v-list-item @click="logout">
-                      <v-list-item-icon>
-                      <v-icon>mdi-logout</v-icon>
-                      </v-list-item-icon>
-                      <v-list-item-title>Logout</v-list-item-title>
-                  </v-list-item>
+                    <v-list-item to="/profile">
+                        <v-list-item-icon>
+                        <v-icon>mdi-account</v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-title>Profile</v-list-item-title>
+                    </v-list-item>
+                    <v-list-item @click="logout">
+                        <v-list-item-icon>
+                        <v-icon>mdi-logout</v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-title>Logout</v-list-item-title>
+                    </v-list-item>
                 </template>
                 <template v-else>
-                  <v-list-item to="/auth/signup">
-                      <v-list-item-icon>
-                      <v-icon>mdi-account-plus</v-icon>
-                      </v-list-item-icon>
-                      <v-list-item-title>Register</v-list-item-title>
-                  </v-list-item>
-                  <v-list-item to="/auth/signin">
-                      <v-list-item-icon>
-                      <v-icon>mdi-login</v-icon>
-                      </v-list-item-icon>
-                      <v-list-item-title>Login</v-list-item-title>
-                  </v-list-item>
+                    <v-list-item to="/auth/signup">
+                        <v-list-item-icon>
+                        <v-icon>mdi-account-plus</v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-title>Register</v-list-item-title>
+                    </v-list-item>
+                    <v-list-item to="/auth/signin">
+                        <v-list-item-icon>
+                        <v-icon>mdi-login</v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-title>Login</v-list-item-title>
+                    </v-list-item>
                 </template>
 
             </v-list-item-group>
@@ -116,7 +119,7 @@ export default{
                     timerProgressBar: true
                   })
                 });
-                axios.get('/api/auth/init').then(res => {        
+                axios.get('/api/auth/init').then(res => {
                   this.$store.commit('logout', res.data.links);
                   this.$store.commit('userInit', res.data.user);
                 });

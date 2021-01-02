@@ -22,4 +22,15 @@ class ProductController extends Controller
     {
         return ProductResource::make($id);
     }
+
+    public function search($category, $id)
+    {
+        $result = $category != 'all'? Product::where('category', $category)
+                         ->where('nama_barang', 'like', "%$id%")
+                         ->orWhere('singkatan', 'like', "%$id%")
+                         ->get() : Product::where('nama_barang', 'like', "%$id%")
+                         ->orWhere('singkatan', 'like', "%$id%")
+                         ->get();
+        return ProductResource::collection($result);
+    }
 }
