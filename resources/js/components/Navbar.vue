@@ -28,10 +28,26 @@
             <strong>Login</strong>
         </v-btn>
        </template>
-        <v-btn text @click="drawer = !drawer" class="d-flex d-md-none">
+        <v-btn text @click="dcategory = !dcategory" class="d-flex d-md-none">
             <v-icon>mdi-shape</v-icon>
         </v-btn>
     </v-app-bar>
+    <v-navigation-drawer temporary app right v-model="dcategory">
+        <v-list nav dense>
+            <v-list-item>
+                <v-list-item-icon>
+                    <v-icon>mdi-shape</v-icon>
+                </v-list-item-icon>
+                <v-list-item-title>Kategori</v-list-item-title>
+            </v-list-item>
+            <v-divider></v-divider>
+            <v-list-item-group>
+                <v-list-item v-for="(categori, i) in categories" :to="{name: 'product', params: {category: categori.slug}}" :key="i">
+                    <v-list-item-title v-text="categori.nama_kategori"></v-list-item-title>
+                </v-list-item>
+            </v-list-item-group>
+        </v-list>
+    </v-navigation-drawer>
     <v-navigation-drawer temporary app v-model="drawer" dark>
         <v-list dense>
             <v-list-item two-line>
@@ -93,6 +109,8 @@ export default{
     data(){
         return{
             drawer: false,
+            dcategory: false,
+            categories: []
         }
     },
     computed: {
@@ -104,7 +122,13 @@ export default{
         },
         user(){
            return this.$store.state.user;
-        }
+        },
+    },
+    mounted(){
+        axios.get('/api/kategori/index').then(res => {
+            this.categories = res.data;
+            console.log(res.data);
+        });
     },
     methods: {
             logout(){
