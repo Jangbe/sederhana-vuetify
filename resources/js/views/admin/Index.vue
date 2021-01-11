@@ -1,40 +1,63 @@
 <template>
 <div class="container mt-3">
-    <div class="row" v-if="!id_buyer">
-        <div class="col-md-8 col-12 mb-3">
-            <div class="list-group">
-                <a href="#" class="list-group-item list-group-item-action active text-center">
-                    Pesanan
-                </a>
-                <section v-for="(cart, index) in carts" :key="cart.id_buyer">
-                <router-link
-                            :to="{name: 'admin', params: {id_buyer: cart.id_buyer}}"
-                            v-if="cart.kode_pesan !== 1"
-                            :class="kelas[index]"
-                            class="list-group-item list-group-item-action text-center d-flex justify-content-between">
-                    {{ cart.nama}}
-                    <span>Rp. {{ number_format(cart.total_harga) }}</span>
-                </router-link>
-                <span v-else :class="kelas[index]" class="list-group-item list-group-item-action text-center d-flex justify-content-between">
-                    {{ cart.nama}}
-                    <span>Rp. {{ number_format(cart.total_harga) }}</span>
-                </span>
-                </section>
-            </div>
-            <div class="col-4">
-
-            </div>
-        </div>
-        <div class="col-md-4 col-12">
-            <div class="list-group">
-                <span class="list-group-item bg-primary text-white">Status Pesanan</span>
-                <span class="list-group-item list-group-item-danger">Pesanan Belum Dibayar</span>
-                <span class="list-group-item list-group-item-warning">Pesanan Sedang Dikerjakan</span>
-                <span class="list-group-item list-group-item-primary">Pesanan Siap Diambil/antar</span>
-                <span class="list-group-item list-group-item-success">Pesanan Sudah Sampai ke Pembeli</span>
-            </div>
-        </div>
-    </div>
+    <v-row v-if="!id_buyer">
+        <v-col cols="12" md="8" class="mb-3">
+            <v-card>
+                <v-list>
+                    <v-list-item-group>
+                        <v-list-item disabled color="primary">
+                            <v-list-item-title>
+                                <v-icon color="primary">mdi-message</v-icon>
+                                Pesanan 1
+                            </v-list-item-title>
+                        </v-list-item>
+                        <v-divider></v-divider>
+                        <template v-for="(cart, index) in carts">
+                            <v-list-item :key="index"
+                                        :to="{name: 'admin', params: {id_buyer: cart.id_buyer}}"
+                                        :disabled="cart.kode_pesan == 1? true : false">
+                                <v-list-item-title :class="[{'d-flex justify-space-between': true}, info_pesan[cart.kode_pesan -1]]">
+                                    <span v-text="cart.nama"></span>
+                                    <span v-text="'Rp. '+number_format(cart.total_harga)"></span>
+                                </v-list-item-title>
+                            </v-list-item>
+                            <v-divider :key="cart.nama"></v-divider>
+                        </template>
+                        <v-list-item disabled class="primary--text">
+                            <v-list-item-title class="d-flex justify-space-between">
+                                <span>Jumlah Pesanan</span> {{carts.length}}
+                            </v-list-item-title>
+                        </v-list-item>
+                    </v-list-item-group>
+                </v-list>
+            </v-card>
+        </v-col>
+        <v-col md="4" cols="12">
+            <v-card>
+                <v-list>
+                    <v-list-item-group>
+                        <v-list-item class="white--text">Status Pesanan</v-list-item>
+                        <!-- <v-divider></v-divider> -->
+                        <v-list-item class="lighten-3 red" light>
+                            <v-list-item-title class="red--text">Pesanan Belum Dibayar</v-list-item-title>
+                        </v-list-item>
+                        <!-- <v-divider></v-divider> -->
+                        <v-list-item class="lighten-3 warning" light>
+                            <v-list-item-title class="warning--text">Pesanan Sedang Dikerjakan</v-list-item-title>
+                        </v-list-item>
+                        <!-- <v-divider></v-divider> -->
+                        <v-list-item class="lighten-3 primary" light>
+                            <v-list-item-title class="primary--text">Pesanan Siap Diambil/antar</v-list-item-title>
+                        </v-list-item>
+                        <!-- <v-divider></v-divider> -->
+                        <v-list-item class="lighten-3 success" light>
+                            <v-list-item-title class="success--text">Pesanan Sudah Sampai ke Pembeli</v-list-item-title>
+                        </v-list-item>
+                    </v-list-item-group>
+                </v-list>
+            </v-card>
+        </v-col>
+    </v-row>
     <div class="row" v-if="id_buyer">
         <div class="col-12 col-md-7 border-info mb-3">
             <div class="collapse show" id="keranjang2">
@@ -94,7 +117,8 @@ export default {
         return{
             carts: {},
             kelas: {},
-            number_format
+            number_format,
+            info_pesan: ['red--text', 'warning--text', 'primary--text', 'success--text']
         }
     },
     watch: {
@@ -102,22 +126,25 @@ export default {
             this.getCarts();
         }
     },
+    computed: {
+        user(){
+            return this.$store.state.user;
+        }
+    },
     mounted(){
         this.getCarts();
     },
     methods: {
         async getCarts(){
-          try{
-            var id_buyer = this.id_buyer ? this.id_buyer : '';
-            var response = await axios.get(`/api/admin/getCarts/${id_buyer}`);
-            this.carts = response.data.data;
-            var kelas = ['list-group-item-danger', 'list-group-item-warning', 'list-group-item-primary' , 'list-group-item-success'];
-            for(var key in this.carts){
-                this.kelas[key] = kelas[this.carts[key].kode_pesan -1];
-            }
-          }catch(e){
-             this.$router.push('/');
-          }
+            try{
+                var id_buyer = this.id_buyer ? this.id_buyer : '';
+                var response = await axios.get(`/api/admin/getCarts/${id_buyer}`);
+                this.carts = response.data.data;
+                var kelas = ['list-group-item-danger', 'list-group-item-warning', 'list-group-item-primary' , 'list-group-item-success'];
+                for(var key in this.carts){
+                    this.kelas[key] = kelas[this.carts[key].kode_pesan -1];
+                }
+            }catch(e){this.$router.push('/')}
         }
     }
 }

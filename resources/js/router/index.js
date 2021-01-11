@@ -8,6 +8,9 @@ import Show from '../views/products/Show';
 import Cart from '../views/carts/Cart';
 import Register from '../views/auth/Register';
 import Login from '../views/auth/Login';
+import Profile from '../views/auth/Profile';
+
+import {store} from '../store/store';
 
 export default{
     mode: "history",
@@ -25,13 +28,13 @@ export default{
             path: "/admin/pesanan/:id_buyer?",
             name: 'admin',
             props: true,
-            component: Admin
+            component: Admin,
         },
         {
             path: "/admin/struct/:page?",
             name: 'admin.struct',
             component: Struct,
-            props: true
+            props: true,
         },
         {
             path: "/auth/signup",
@@ -40,6 +43,17 @@ export default{
         {
             path: "/auth/signin",
             component: Login
+        },
+        {
+            path: "/profile",
+            component: Profile,
+            beforeEnter: (to, from, next) => {
+                if(store.state.isLogin){
+                    next();
+                }else{
+                    next('/auth/signin');
+                }
+            }
         },
         {
             path: "/belanja/:category?",

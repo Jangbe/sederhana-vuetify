@@ -7,6 +7,7 @@ export const store = new Vuex.Store({
      state: {
          name: "devi",
          isLogin: false,
+         isAdmin: true,
          user: {},
          links: [
             {icon: 'mdi-home', text: 'Home', route: '/'},
@@ -23,13 +24,15 @@ export const store = new Vuex.Store({
      },
      mutations: {
          userInit: (state, payload) => {
-              state.user = payload;
+              state.user = payload.user;
+              state.isAdmin = payload.isAdmin;
          },
          changeName: (state, payload) => {
               state.name = payload;
          },
          login: (state, payload) => {
-              state.links = payload;
+              state.links = payload.links;
+              state.isAdmin = payload.isAdmin;
               state.isLogin = true;
          },
          logout: (state, payload) => {

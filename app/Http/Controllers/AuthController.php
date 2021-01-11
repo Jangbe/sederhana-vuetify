@@ -27,17 +27,21 @@ class AuthController extends Controller
         if(Auth::user()){
             if(Auth::user()->role == 1){
                $route = $routes[0];
+               $isAdmin = true;
             }else{
-               $route = $routes[1];
+                $route = $routes[1];
+                $isAdmin = false;
             }
             return response()->json([
                 'isLogin' => true,
+                'isAdmin' => $isAdmin,
                 'user' => Auth::user(),
                 'links' => $route
             ]);
         }else{
             return response()->json([
                 'isLogin' => false,
+                'isAdmin' => false,
                 'user' => [ 'name'=>'Unknow'],
                 'links' => $routes[1]
             ]);

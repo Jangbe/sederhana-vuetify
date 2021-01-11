@@ -145,7 +145,7 @@ export default{
                 });
                 axios.get('/api/auth/init').then(res => {
                   this.$store.commit('logout', res.data.links);
-                  this.$store.commit('userInit', res.data.user);
+                  this.$store.commit('userInit', res.data);
                 });
                 this.$router.push('/belanja');
             }
