@@ -14,7 +14,7 @@
                     </v-list-item>
                     <template v-for="(product, k) in products">
                         <v-list-item  :key="product.id" inactive>
-                            <v-list-item-title class="d-flex justify-space-between col-5">
+                            <v-list-item-title class="d-flex justify-space-between col-md-5 col-3">
                                 <span class="d-md-inline-block d-none" v-text="product.nama"></span>
                                 <span class="d-sm-inline-block d-md-none" v-text="product.singkatan"></span>
                             </v-list-item-title>

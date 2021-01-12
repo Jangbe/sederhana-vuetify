@@ -28,6 +28,7 @@ Route::prefix('admin')->middleware('role:1')->group(function(){
     Route::get('getCarts/{id_buyer?}', [AdminController::class, 'getCarts']);
     Route::get('struct/{search?}', [AdminController::class, 'struct']);
     Route::post('make', [AdminController::class, 'make']);
+    Route::post('category', [AdminController::class, 'category']);
 });
 
 Route::prefix('auth')->group(function(){

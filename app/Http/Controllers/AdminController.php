@@ -84,4 +84,11 @@ class AdminController extends Controller
             'type' => 'success'
         ]);
     }
+    
+    public function category(){
+        request()->validate([
+            'nama' => 'required',
+            'jumlah' => 'required|min:1'
+        ]);
+    }
 }

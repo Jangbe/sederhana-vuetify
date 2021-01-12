@@ -3,6 +3,7 @@ import About from '../views/About';
 import notFound from '../views/404';
 import Admin from '../views/admin/Index';
 import Struct from '../views/admin/Struct';
+import Category from '../views/admin/Category';
 import Index from '../views/products/Index';
 import Show from '../views/products/Show';
 import Cart from '../views/carts/Cart';
@@ -29,6 +30,11 @@ export default{
             name: 'admin',
             props: true,
             component: Admin,
+        },
+        {
+            path: "/admin/category",
+            name: "category",
+            component: Category
         },
         {
             path: "/admin/struct/:page?",
