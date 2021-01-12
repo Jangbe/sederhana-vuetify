@@ -14,8 +14,18 @@ class AuthController extends Controller
     {
         $routes = [
             [//For admin
-                ['icon' => 'mdi-view-dashboard', 'text' => 'Dashboard', 'route' => '/admin/pesanan'],
-                ['icon' => 'mdi-note', 'text' => 'Buat Struk', 'route' => '/admin/struct']
+                'Dashboard' => [
+                    'mdi-monitor-dashboard',
+                    ['icon' => 'mdi-view-dashboard', 'text' => 'Dashboard', 'route' => '/admin/pesanan'],
+                    ['icon' => 'mdi-note', 'text' => 'Buat Struk', 'route' => '/admin/struct'],
+                ],
+                'Product' => [
+                    'mdi-briefcase-edit',
+                    ['icon' => 'mdi-shape', 'text' => 'Kategori', 'route' => '/admin/category'],
+                    ['icon' => 'mdi-plus', 'text' => 'Tambah Barang', 'route' => '/admin/add-product'],
+                    ['icon' => 'mdi-square-edit-outline', 'text' => 'Edit Barang', 'route' => '/admin/edit-product'],
+                    ['icon' => 'mdi-plus-circle', 'text' => 'Tambah Stok', 'route' => '/admin/add-stok'],
+                ]
             ],
             [//For user login/not logged in
                 ['icon' => 'mdi-home', 'text' => 'Home', 'route' => '/'],

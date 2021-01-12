@@ -9,12 +9,7 @@ export const store = new Vuex.Store({
          isLogin: false,
          isAdmin: true,
          user: {},
-         links: [
-            {icon: 'mdi-home', text: 'Home', route: '/'},
-            {icon: 'mdi-cog', text: 'About', route: '/about'},
-            {icon: 'mdi-cart-plus', text: 'Belanja', route: '/belanja'},
-            {icon: 'mdi-cart-check', text: 'Checkout', route: '/keranjang'}
-         ],
+         links: {},
          carts: {
             count: 0,
             harga: 0,

@@ -4,10 +4,29 @@
         <v-app-bar-nav-icon @click="drawer = !drawer" class="d-flex d-md-none"></v-app-bar-nav-icon>
         <v-toolbar-title class="font-weight-bold">Sederhana Shop</v-toolbar-title>
         <v-spacer></v-spacer>
-        <v-btn text v-for="link in links" :key="link.text" :to="link.route" class="d-none d-md-flex">
-            <v-icon class="font-weight-bold" left v-text="link.icon"></v-icon>
-            <strong v-text="link.text"></strong>
-        </v-btn>
+        <template v-for="(item, k) in links">
+            <v-btn text :key="item.text" :to="item.route" class="d-none d-md-flex" v-if="isFinite(k)">
+                <v-icon class="font-weight-bold" left v-text="item.icon"></v-icon>
+                <strong v-text="item.text"></strong>
+            </v-btn>
+            <v-menu offset-y transition="slide-y-transition" :key="k" v-else>
+                <template v-slot:activator="{ on, attrs }">
+                    <v-btn dark text v-bind="attrs" v-on="on" class="font-weight-bold d-none d-md-flex">
+                    <v-icon left v-text="item[0]"></v-icon>
+                    {{k}}
+                    <v-icon right>mdi-menu-down</v-icon>
+                    </v-btn>
+                </template>
+
+                <v-list>
+                    <template v-for="(v, index) in item">
+                        <v-list-item v-if="index != 0" :key="index" :to="v.route">
+                            <v-list-item-title><v-icon left v-text="v.icon"></v-icon>{{ v.text }}</v-list-item-title>
+                        </v-list-item>
+                    </template>
+                </v-list>
+            </v-menu>
+        </template>
        <template v-if="isLogin">
          <v-btn text to="/profile" class="d-none d-md-flex">
             <v-icon class="font-weight-bold" left>mdi-account</v-icon>
@@ -32,8 +51,10 @@
             <v-icon>mdi-shape</v-icon>
         </v-btn>
     </v-app-bar>
-    <v-navigation-drawer temporary app right v-model="dcategory">
-        <v-list nav dense>
+
+    <!-- Untuk drawer kategori -->
+    <v-navigation-drawer temporary app right v-model="dcategory" color="cyan" dark>
+        <v-list nav>
             <v-list-item>
                 <v-list-item-icon>
                     <v-icon>mdi-shape</v-icon>
@@ -48,6 +69,8 @@
             </v-list-item-group>
         </v-list>
     </v-navigation-drawer>
+
+    <!-- Untuk drawer menu -->
     <v-navigation-drawer temporary app v-model="drawer" dark>
         <v-list dense>
             <v-list-item two-line>
@@ -64,12 +87,29 @@
         </v-list>
         <v-list nav dense>
             <v-list-item-group active-class="deep-purple--text text--accent-4" >
-                <v-list-item v-for="link in links" :key="link.text" :to="link.route">
-                    <v-list-item-icon>
-                    <v-icon v-text="link.icon"></v-icon>
-                    </v-list-item-icon>
-                    <v-list-item-title v-text="link.text"></v-list-item-title>
-                </v-list-item>
+                <template v-for="(link, k) in links">
+                    <v-list-item :key="link.text" v-if="isFinite(k)" :to="link.route">
+                        <v-list-item-icon>
+                        <v-icon v-text="link.icon"></v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-title v-text="link.text"></v-list-item-title>
+                    </v-list-item>
+                    <v-list-group :key="k" v-else>
+                        <template v-slot:activator>
+                            <v-list-item-icon><v-icon v-text="link[0]"></v-icon></v-list-item-icon>
+                            <v-list-item-title v-text="k"></v-list-item-title>
+                        </template>
+                        <template v-for="(item, k) in link">
+                            <v-list-item v-if="k != 0" :key="k" :to="item.route">
+                                <v-list-item-icon class="ml-4"><v-icon v-text="item.icon"></v-icon></v-list-item-icon>
+                                <v-list-item-content>
+                                    <v-list-item-title v-text="item.text"></v-list-item-title>
+                                </v-list-item-content>
+                            </v-list-item>
+                        </template>
+                        <v-divider></v-divider>
+                    </v-list-group>
+                </template>
                 <template v-if="isLogin">
                     <v-list-item to="/profile">
                         <v-list-item-icon>
@@ -110,7 +150,8 @@ export default{
         return{
             drawer: false,
             dcategory: false,
-            categories: []
+            categories: [],
+            lnks: []
         }
     },
     computed: {
@@ -127,7 +168,6 @@ export default{
     mounted(){
         axios.get('/api/kategori/index').then(res => {
             this.categories = res.data;
-            console.log(res.data);
         });
     },
     methods: {

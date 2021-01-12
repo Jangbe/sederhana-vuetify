@@ -1,57 +1,51 @@
 <template>
-<div class="container mt-3">
-<div class="row">
-
-    <div class="col-md-8 col-12">
-        <div class="form-group">
-            <input type="text" v-model="word" @keyup="search" placeholder="cari nama barang..." class="form-control mb-3">
-        </div>
-        <ul class="list-group mb-2 barang">
-            <li class="list-group-item bg-secondary text-white d-flex justify-content-between">
-                Nama Barang
-                <span>Opsi</span>
-            </li>
-            <li class="list-group-item" v-for="product in products" :key="product.id">
-                <form action="#" method="post" @submit.prevent="cart(product.id)">
-                    <span class="d-md-inline-block d-none" v-text="product.nama"></span>
-                    <span class="d-sm-inline-block d-md-none" v-text="product.singkatan"></span>
-                    <button class="btn btn-secondary float-right ml-2" type="submit"><i class="fas fa-plus"></i></button>
-                    <input v-for="(value, name) in product.stok" :key="name"
-                            type="number"
-                            class="form-control col-md-2 col-2 d-inline-block float-right"
-                            v-model="form[product.id]['detail'][name]"
-                            :placeholder="name">
-                </form>
-            </li>
-        </ul>
-        <nav>
-            <ul class="pagination pagination-secondary">
-                <li class="page-item">
-                    <router-link v-if="link.prev" class="page-link" :to="{name: 'admin.struct', params: {page: (meta.current_page-1)}}" rel="prev" aria-label="@lang('pagination.previous')">&lsaquo;</router-link>
-                    <a v-else class="page-link" aria-hidden="true" aria-disabled="true" aria-label="@lang('pagination.previous')">&lsaquo;</a>
-                </li>
-
-                <li class="page-item page-item-secondary" v-for="(v, i) in meta.last_page" :key="i" :class="{active: (i == meta.current_page -1)}">
-                    <router-link class="page-link" :to="{name: 'admin.struct', params: {page: (i+1)}}" v-text="i+1"></router-link>
-                </li>
-
-                <li class="page-item">
-                    <router-link v-if="link.next" class="page-link" :to="{name: 'admin.struct', params: {page: (meta.current_page+1)}}" rel="next" aria-label="@lang('pagination.next')">&rsaquo;</router-link>
-                    <a v-else class="page-link disabled" rel="next" aria-label="@lang('pagination.next')">&rsaquo;</a>
-                </li>
-            </ul>
-        </nav>
-    </div>
-    <div class="col-12 col-md-4">
+<v-container>
+<v-row>
+    <v-col cols="12" md="8">
+        <v-text-field type="text" v-model="word" @keyup="search" hide-details="" placeholder="cari nama barang..." class="mb-3"></v-text-field>
+        <v-list class="list-group mb-2 barang">
+            <v-card>
+                <v-list-item-group>
+                    <v-list-item class="cyan">
+                        <v-list-item-title class="d-flex justify-space-between white--text">
+                            Nama Barang
+                            <span>Opsi</span>
+                        </v-list-item-title>
+                    </v-list-item>
+                    <template v-for="(product, k) in products">
+                        <v-list-item  :key="product.id" inactive>
+                            <v-list-item-title class="d-flex justify-space-between col-5">
+                                <span class="d-md-inline-block d-none" v-text="product.nama"></span>
+                                <span class="d-sm-inline-block d-md-none" v-text="product.singkatan"></span>
+                            </v-list-item-title>
+                            <v-list-item-action>
+                                <form action="#" method="post" @submit.prevent="cart(product.id)">
+                                    <v-btn class="float-right ml-2" small fab depressed color="cyan" type="submit"><v-icon color="white">mdi-plus</v-icon></v-btn>
+                                        <v-text-field v-for="(value, name) in product.stok" :key="name"
+                                            type="number" min="0"
+                                            class="col-3 float-right"
+                                            outlined dense hide-details=""
+                                            v-model="form[product.id]['detail'][name]"
+                                            :label="name"></v-text-field>
+                                </form>
+                            </v-list-item-action>
+                        </v-list-item>
+                        <v-divider :key="k"></v-divider>
+                    </template>
+                </v-list-item-group>
+            </v-card>
+        </v-list>
+        <v-pagination v-model="page" :length="meta.last_page"></v-pagination>
+    </v-col>
+    <v-col cols="12" md="4" class="mb-4">
         <form action="#" method="post" @submit.prevent="make">
-            <span class="text-danger text-small" v-if="hasError" v-text="hasError"></span>
-            <input type="text" class="form-control" minlength="5" maxlength="20" v-model="nama.nama" placeholder="Nama...">
-            <button class="btn btn-secondary mb-2 col-12">Tambahkan</button>
+            <v-text-field type="text" minlength="5" label="Nama" @focus="hasError = ''" :error-messages="hasError" maxlength="20" v-model="nama.nama" placeholder="Nama..."></v-text-field>
+            <v-btn color="success" type="submit" class="mb-5 col-12">Tambahkan</v-btn>
         </form>
-        <cart :hasChange="hasChange"></cart>
-    </div>
-</div>
-</div>
+        <cart></cart>
+    </v-col>
+</v-row>
+</v-container>
 </template>
 
 <script>
@@ -61,7 +55,6 @@ export default {
     props: ['page'],
     data(){
         return {
-            hasChange: 0,
             products: {},
             form: {},
             number_format,
@@ -98,11 +91,17 @@ export default {
         async cart(id){
             this.form[id].id = id;
             var response = await axios.post('/api/keranjang/make', this.form[id]);
-            this.form[id].detail = {};
-            this.hasChange++;
-            this.$toasted.show(response.data.message, {
-                type: response.data.type,
-                duration: 2000
+            axios.get('/api/keranjang/get').then(data => {
+                this.$store.commit('editCart', data.data)
+            });
+            this.$swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: response.data.type,
+                title: response.data.message,
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
             });
         },
         search(){
@@ -120,13 +119,20 @@ export default {
                 var response = await axios.post('/api/admin/make', this.nama);
                 this.hasError = '';
                 this.nama.nama = '';
-                this.$toasted.show(response.data.message, {
-                    duration: 5000,
-                    type: response.data.type
+                this.$swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: response.data.type,
+                    title: response.data.message,
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                });
+                axios.get('/api/keranjang/get').then(data => {
+                    this.$store.commit('editCart', data.data)
                 });
             }catch(e){
                 this.hasError = e.response.data.errors.nama[0];
-                console.log(e.response.data.errors);
             }
         }
     }

@@ -1,7 +1,7 @@
 <template>
-  <v-card class="mb-4" max-width="300" tile>
-    <v-list shaped>
-      <v-subheader><v-icon left>mdi-shape</v-icon> KATEGORI</v-subheader>
+  <v-card class="mb-4" tile>
+    <v-list-group prepend-icon="mdi-shape" shaped value="true">
+      <template v-slot:activator><v-list-item-title>Kategori</v-list-item-title></template>
       <v-divider></v-divider>
       <v-list-item-group color="primary">
         <v-list-item :to="{name: 'product'}" exact>
@@ -15,7 +15,7 @@
           </v-list-item-content>
         </v-list-item>
       </v-list-item-group>
-    </v-list>
+    </v-list-group>
   </v-card>
 </template>
 

@@ -50,7 +50,7 @@ class AdminController extends Controller
         Buyer::create([
             'id_buyer' => $id_buyer,
             'nama' => request('nama'),
-            'email' => null,
+            'email' => '',
             'telepon' => '',
             'alamat' => '',
             'catatan' => ''
