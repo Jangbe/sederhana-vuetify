@@ -6,12 +6,10 @@ use App\Http\Resources\BuyerResource;
 use App\Http\Resources\ProductResource;
 use App\Models\Buyer;
 use App\Models\Cart;
+use App\Models\Category;
 use App\Models\Product;
 use App\Models\Transaction;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Str;
 
 class AdminController extends Controller
 {
@@ -84,11 +82,21 @@ class AdminController extends Controller
             'type' => 'success'
         ]);
     }
-    
+
     public function category(){
         request()->validate([
-            'nama' => 'required',
-            'jumlah' => 'required|min:1'
+            'nama' => 'required|string',
+            'jumlah' => 'required|min:1|max:6|numeric',
+            'detail' => 'required|array'
+        ]);
+        Category::create([
+            'nama_kategori' => request('nama'),
+            'slug' => Str::slug(request('nama')),
+            'detail_nama' => implode('-', request('detail'))
+        ]);
+        return response()->json([
+            'type' => 'success',
+            'message' => 'Kategori berhasil ditambahkan'
         ]);
     }
 }

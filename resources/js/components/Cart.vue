@@ -59,30 +59,30 @@ export default {
            this.number_format = number_format;
         },
         hapus(id){
-           this.$swal.fire({
-             title: 'Apakah kamu yakin?',
-             text: "Jika iya, tekan tombol 'Ya'!",
-             icon: 'warning',
-             showCancelButton: true,
-             confirmButtonColor: '#3085d6',
-             cancelButtonColor: '#d33',
-             confirmButtonText: 'Ya'
-           }).then((result) => {
-             if (result.isConfirmed) {
-              axios.get(`/api/keranjang/hapus/${id}`).then((respon) =>{
-                this.$swal.fire({
-                    toast: true,
-                    position: 'top-end',
-                    icon: respon.data.type,
-                    title: respon.data.message,
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true
-                })
-               });
-               this.getCarts();
-             }
-          })
+            this.$swal.fire({
+                title: 'Apakah kamu yakin?',
+                text: "Jika iya, tekan tombol 'Ya'!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                axios.get(`/api/keranjang/hapus/${id}`).then((respon) =>{
+                    this.$swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: respon.data.type,
+                        title: respon.data.message,
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true
+                    })
+                });
+                this.getCarts();
+                }
+            })
         },
 
         getCarts(){

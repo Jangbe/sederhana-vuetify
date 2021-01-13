@@ -4,6 +4,7 @@ import notFound from '../views/404';
 import Admin from '../views/admin/Index';
 import Struct from '../views/admin/Struct';
 import Category from '../views/admin/Category';
+import Create from '../views/admin/Create';
 import Index from '../views/products/Index';
 import Show from '../views/products/Show';
 import Cart from '../views/carts/Cart';
@@ -41,6 +42,11 @@ export default{
             name: 'admin.struct',
             component: Struct,
             props: true,
+        },
+        {
+            path: "/admin/add-product",
+            name: 'admin.product',
+            component: Create
         },
         {
             path: "/auth/signup",

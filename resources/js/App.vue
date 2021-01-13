@@ -20,20 +20,23 @@ export default{
       this.init();
     },
     methods: {
-       init(){
-         axios.get('/api/auth/init').then(res => {
-           this.$store.commit('userInit', res.data);
-           this.$store.commit('init',
-             {
-               isLogin: res.data.isLogin,
-               links: res.data.links
-             }
-           );
-         });
-         axios.get('/api/keranjang/get').then(data => {
-            this.$store.commit('editCart', data.data);
-         });
-       }
+        init(){
+            axios.get('/api/auth/init').then(res => {
+            this.$store.commit('userInit', res.data);
+            this.$store.commit('init',
+                {
+                isLogin: res.data.isLogin,
+                links: res.data.links
+                }
+            );
+            });
+            axios.get('/api/keranjang/get').then(data => {
+                this.$store.commit('editCart', data.data);
+            });
+            axios.get('/api/kategori/index').then(data => {
+                this.$store.commit('category', data.data);
+            });
+        }
     }
 }
 </script>

@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
+use App\Models\Product;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('product')->group(function(){
@@ -15,6 +16,9 @@ Route::prefix('product')->group(function(){
 
 Route::prefix('kategori')->group(function(){
     Route::get('index', [CategoryController::class, 'index']);
+    Route::get('show/{id}', [CategoryController::class, 'show']);
+    Route::post('edit', [CategoryController::class, 'edit']);
+    Route::post('delete', [CategoryController::class, 'destroy']);
 });
 
 Route::prefix('keranjang')->group(function(){
@@ -29,6 +33,7 @@ Route::prefix('admin')->middleware('role:1')->group(function(){
     Route::get('struct/{search?}', [AdminController::class, 'struct']);
     Route::post('make', [AdminController::class, 'make']);
     Route::post('category', [AdminController::class, 'category']);
+    Route::post('product', [ProductController::class, 'store']);
 });
 
 Route::prefix('auth')->group(function(){
