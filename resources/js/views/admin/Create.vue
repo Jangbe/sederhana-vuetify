@@ -63,7 +63,7 @@ export default {
             categories: [],
             category: [],
             rules: [
-                value => !value || value.size < 3000000 || 'Avatar size should be less than 3 MB!',
+                value => !value || value.size < 3000000 || 'Ukuran gambar tidak boleh melebihi 3 MB!',
             ],
         }
     },
@@ -91,21 +91,22 @@ export default {
                 var data = new FormData();
                 data.append('nama', this.input.nama);
                 data.append('singkatan', this.input.singkatan);
-                data.append('gambar', this.input.gambar.name);
                 data.append('harga', this.input.harga);
                 data.append('kategori', this.input.kategori);
-                data.append('file', document.getElementById('file').files[0]);
-                let res = await axios.post('/api/admin/product', data);
+                data.append('gambar', document.getElementById('file').files[0]);
+                
+                const config = { headers: { 'Content-Type': 'multipart/form-data' } };
+                let res = await axios.post('/api/admin/product', data, config);
                 console.log(res.data);
-                // this.$swal.fire({
-                //     toast: true,
-                //     showConfirmButton: false,
-                //     position: 'top-end',
-                //     icon: res.data.type,
-                //     title: res.data.message,
-                //     timer: 3000,
-                //     timerProgressBar: true
-                // });
+                this.$swal.fire({
+                    toast: true,
+                    showConfirmButton: false,
+                    position: 'top-end',
+                    icon: res.data.type,
+                    title: res.data.message,
+                    timer: 3000,
+                    timerProgressBar: true
+                });
             }catch(e){this.hasErrors = e.response.data.errors}
         }
     }

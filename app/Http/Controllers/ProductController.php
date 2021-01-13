@@ -34,9 +34,9 @@ class ProductController extends Controller
         return ProductResource::collection($result);
     }
 
-    public function store()
+    public function store(Request $request)
     {
-        return response()->json(request());
+        return $request;
         request()->validate([
             'nama' => 'required|string',
             'singkatan' => 'required|max:11',
@@ -45,7 +45,7 @@ class ProductController extends Controller
             'kategori' => 'required'
         ]);
         $id = Product::id_uniq('PD', 'products', 'id_product');
-        $file = request()->file('gambar');
+        $file = $request->file('gambar');
         $eks = $file->getClientOriginalExtension();
         $content = $file->getContent();
         $fileName = date('dmy-').uniqid().'.'.$eks;
