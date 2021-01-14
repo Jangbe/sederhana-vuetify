@@ -2,7 +2,7 @@
   <v-container class="mt-2">
       <v-row>
             <v-col cols="12">
-                <form action="#" method="post" @submit.prevent="add" enctype="multipart/form-data">
+                <v-form action="#" method="post" role="form" @submit.prevent="add" lazy-validation>
                 <v-card :loading="loading">
                     <v-row no-gutters>
                         <v-col cols="12" md="4">
@@ -31,7 +31,7 @@
                             <v-card-text>
                                 <v-select outlined :items="categories" @focus="hasErrors.kategori = ''" :error-messages="hasErrors.kategori" @change="cek" v-model="input.kategori" label="Kategori"></v-select>
                                 <template v-for="(v, k) in category">
-                                    <v-text-field outlined type="number" min="0" v-if="k +1 != category.length" :key="k" v-model="input.detail[v]" :label="`1 ${v} berisi .. ${category[k+1]}`"></v-text-field>
+                                    <v-text-field outlined type="number" min="0" v-if="k +1 != category.length" :key="k" v-model="input.detail[k]" :label="`1 ${v} berisi .. ${category[k+1]}`"></v-text-field>
                                 </template>
                                 <v-btn bottom color="primary" text type="submit">
                                     <v-icon left>mdi-plus-circle</v-icon>Tambahkan Barang
@@ -40,7 +40,7 @@
                         </v-col>
                     </v-row>
                 </v-card>
-                </form>
+                </v-form>
             </v-col>
         </v-row>
   </v-container>
@@ -56,7 +56,7 @@ export default {
                 gambar: {},
                 harga: '',
                 kategori: '',
-                detail: {}
+                detail: []
             },
             hasErrors: {},
             loading: false,
@@ -66,6 +66,13 @@ export default {
                 value => !value || value.size < 3000000 || 'Ukuran gambar tidak boleh melebihi 3 MB!',
             ],
         }
+    },
+    beforeCreate(){
+        axios.get('/api/auth/init').then(data => {
+            if(!data.data.isAdmin){
+                this.$router.push('/auth/signin');
+            }
+        })
     },
     mounted(){
         this.init();
@@ -80,24 +87,26 @@ export default {
         },
         cek(){
             axios.get(`/api/kategori/show/${this.input.kategori}`).then(data => {
-                this.input.detail = {};
+                this.input.detail = [];
                 this.category = data.data.detail;
             })
         },
         async add(){
-            this.input.detail[this.category[this.category.length-1]] = 1;
-            console.log(this.input);
+            this.input.detail[this.category.length-1] = 1;
             try{
                 var data = new FormData();
                 data.append('nama', this.input.nama);
                 data.append('singkatan', this.input.singkatan);
                 data.append('harga', this.input.harga);
                 data.append('kategori', this.input.kategori);
-                data.append('gambar', document.getElementById('file').files[0]);
-                
-                const config = { headers: { 'Content-Type': 'multipart/form-data' } };
+                data.append('detail', this.input.detail);
+                data.append('gambar', this.input.gambar);
+
+                var config = {
+                    headers: {'content-type': 'multipart/form-data'}
+                }
+
                 let res = await axios.post('/api/admin/product', data, config);
-                console.log(res.data);
                 this.$swal.fire({
                     toast: true,
                     showConfirmButton: false,

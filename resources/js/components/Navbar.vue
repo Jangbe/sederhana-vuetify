@@ -63,6 +63,9 @@
             </v-list-item>
             <v-divider></v-divider>
             <v-list-item-group>
+                <v-list-item :to="{name: 'product'}">
+                    <v-list-item-title>Semua</v-list-item-title>
+                </v-list-item>
                 <v-list-item v-for="(categori, i) in categories" :to="{name: 'product', params: {category: categori.slug}}" :key="i">
                     <v-list-item-title v-text="categori.nama_kategori"></v-list-item-title>
                 </v-list-item>

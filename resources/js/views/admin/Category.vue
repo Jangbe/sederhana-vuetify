@@ -137,6 +137,13 @@ export default {
             return this.$store.state.categories;
         }
     },
+    beforeCreate(){
+        axios.get('/api/auth/init').then(data => {
+            if(!data.data.isAdmin){
+                this.$router.push('/auth/signin');
+            }
+        })
+    },
     mounted(){
         this.number_format = number_format;
     },

@@ -1,6 +1,7 @@
 /node_modules
 /public/hot
 /public/storage
+/public/img/barang
 /storage/*.key
 /vendor
 .env

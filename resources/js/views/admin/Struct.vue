@@ -67,6 +67,13 @@ export default {
             hasError: ''
         }
     },
+    beforeCreate(){
+        axios.get('/api/auth/init').then(data => {
+            if(!data.data.isAdmin){
+                this.$router.push('/auth/signin');
+            }
+        })
+    },
     mounted(){
         this.getProducts();
     },
@@ -77,15 +84,13 @@ export default {
     },
     methods: {
         async getProducts(page = this.page){
-            try{
-                var data = await axios.get(`/api/admin/struct?page=${page}`)
-                this.products = data.data.data;
-                for(var i in this.products){
-                    this.form[this.products[i].id] = { id: '', detail: {},};
-                }
-                this.link = data.data.links;
-                this.meta = data.data.meta;
-            }catch(e){this.$router.push('/')}
+            var data = await axios.get(`/api/admin/struct?page=${page}`)
+            this.products = data.data.data;
+            for(var i in this.products){
+                this.form[this.products[i].id] = { id: '', detail: {},};
+            }
+            this.link = data.data.links;
+            this.meta = data.data.meta;
             this.number_format = number_format;
         },
         async cart(id){

@@ -9,10 +9,10 @@ class Product extends Model
 {
     protected $guarded = [];
 
-    public static function id_uniq($prefix, $table,$colloum){
-        $id = DB::table($table)->latest()->first();
+    public static function id_uniq($prefix, $table, $column){
+        $id = DB::table($table)->latest($column)->first();
         if($id){
-            $last = $id->$colloum;
+            $last = $id->$column;
             $last = substr($last,-4)+1;
         }else{
             $last = 1;

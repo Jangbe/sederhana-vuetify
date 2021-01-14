@@ -146,16 +146,21 @@ export default {
             return this.$store.state.user;
         }
     },
+    beforeCreate(){
+        axios.get('/api/auth/init').then(data => {
+            if(!data.data.isAdmin){
+                this.$router.push('/auth/signin');
+            }
+        })
+    },
     mounted(){
         this.getCarts();
     },
     methods: {
         async getCarts(){
-            try{
-                var id_buyer = this.id_buyer ? this.id_buyer : '';
-                var response = await axios.get(`/api/admin/getCarts/${id_buyer}`);
-                this.carts = response.data.data;
-            }catch(e){this.$router.push('/')}
+            var id_buyer = this.id_buyer ? this.id_buyer : '';
+            var response = await axios.get(`/api/admin/getCarts/${id_buyer}`);
+            this.carts = response.data.data;
         }
     }
 }
