@@ -34,6 +34,7 @@ Route::prefix('admin')->middleware('role:1')->group(function(){
     Route::post('make', [AdminController::class, 'make']);
     Route::post('category', [AdminController::class, 'category']);
     Route::post('product', [ProductController::class, 'store']);
+    Route::post('edit-product', [ProductController::class, 'edit']);
 });
 
 Route::prefix('auth')->group(function(){

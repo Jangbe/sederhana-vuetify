@@ -145,8 +145,7 @@ export default {
                     this.input.harga = input.harga;
                     this.input.kategori = {text: input.kategori, value: input.slug};
                     this.input.oldGambar = input.gambar;
-                    this.cek(input.slug);
-                    console.log(input);
+                    this.cek(input.slug, input.detail.split('-'));
                 })
             }
         },
@@ -159,11 +158,12 @@ export default {
                 this.getProducts();
             }
         },
-        cek(v = null){
+        cek(v = null, k = null){
             var kategori = v == null? this.input.kategori : v;
             axios.get(`/api/kategori/show/${kategori}`).then(data => {
                 this.input.detail = [];
                 this.category = data.data.detail;
+                if(k != null) this.input.detail = k;
             })
         },
         add(){
@@ -180,7 +180,8 @@ export default {
                 headers: {'content-type': 'multipart/form-data'}
             }
 
-            axios.post('/api/admin/product', data, config).then(res => {
+            axios.post('/api/admin/edit-product', data, config).then(res => {
+                console.log(res.data);
                 this.$swal.fire({
                     toast: true,
                     showConfirmButton: false,

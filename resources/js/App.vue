@@ -17,20 +17,22 @@
 <script>
 export default{
     beforeCreate(){
-        axios.get('/api/auth/init').then(res => {
-        this.$store.commit('userInit', res.data);
-        this.$store.commit('init',
-            {
-            isLogin: res.data.isLogin,
-            links: res.data.links
-            }
-        );
-        });
         axios.get('/api/keranjang/get').then(data => {
             this.$store.commit('editCart', data.data);
         });
         axios.get('/api/kategori/index').then(data => {
             this.$store.commit('category', data.data);
+        });
+        axios.get('/api/auth/init').then(res => {
+            this.$store.commit('userInit', res.data);
+            this.$store.commit('init',{
+                isLogin: res.data.isLogin,
+                links: res.data.links
+            });
+            var admin = this.$route.path.split('/')[1] != 'admin'
+            if(res.data.isAdmin && admin){
+                this.$router.push('/admin/pesanan');
+            }
         });
     }
 }

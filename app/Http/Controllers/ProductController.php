@@ -67,4 +67,8 @@ class ProductController extends Controller
             'type' => 'success'
         ]);
     }
+    
+    public function edit(){
+        return request ();
+    }
 }
