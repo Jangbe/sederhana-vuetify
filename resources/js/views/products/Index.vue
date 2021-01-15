@@ -1,5 +1,32 @@
 <template>
     <v-container class="mt-3">
+        <template v-if="first">
+            <v-row>
+                <v-col cols="12" class="mt-3">
+                    <v-skeleton-loader type="text"></v-skeleton-loader>
+                </v-col>
+                <v-col cols="12" md="3" class="d-none d-md-block">
+                    <v-card>
+                        <v-skeleton-loader type="list-item"></v-skeleton-loader>
+                        <v-divider></v-divider>
+                        <v-skeleton-loader type="list-item@6"></v-skeleton-loader>
+                    </v-card>
+                    <v-card class="mt-4">
+                        <v-skeleton-loader type="list-item"></v-skeleton-loader>
+                        <v-divider></v-divider>
+                        <v-skeleton-loader type="list-item@6"></v-skeleton-loader>
+                    </v-card>
+                </v-col>
+                <v-col md="9" cols="12">
+                    <v-row>
+                        <v-col cols="6" md="3" v-for="i in 12" :key="i">
+                            <v-skeleton-loader type="image"></v-skeleton-loader>
+                        </v-col>
+                    </v-row>
+                </v-col>
+            </v-row>
+        </template>
+        <template v-else>
         <v-row>
             <v-col cols="12">
                 <v-text-field dense hide-details="" outlined rounded v-model="vsearch" @keyup="search" append-icon="mdi-magnify" label="Cari barang" @click:append="search()"></v-text-field>
@@ -44,6 +71,7 @@
                 </v-row>
             </v-col>
         </v-row>
+        </template>
     </v-container>
 </template>
 
@@ -53,6 +81,7 @@ export default {
     props: ['category'],
     data(){
         return{
+            first: true,
             products: {},
             active: '',
             vsearch: ''
@@ -73,6 +102,7 @@ export default {
             this.active = category;
             axios.get(`/api/product/index/${category}`).then((response) => {
                 this.products = response.data.data;
+                this.first = false;
             });
         },
         search(){

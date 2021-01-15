@@ -27,7 +27,7 @@ export default {
             categories: []
         }
     },
-    mounted(){
+    beforeCreate(){
         axios.get('/api/kategori/index').then((response) => {
             this.categories = response.data;
         });

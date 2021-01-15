@@ -1,5 +1,65 @@
 <template>
     <v-container class="mt-3">
+        <template v-if="first">
+            <v-row>
+                <v-col cols="12" md="3" class="d-none d-md-block">
+                    <v-card>
+                        <v-skeleton-loader type="list-item"></v-skeleton-loader>
+                        <v-divider></v-divider>
+                        <v-skeleton-loader type="list-item@6"></v-skeleton-loader>
+                    </v-card>
+                    <v-card class="mt-4">
+                        <v-skeleton-loader type="list-item"></v-skeleton-loader>
+                        <v-divider></v-divider>
+                        <v-skeleton-loader type="list-item@6"></v-skeleton-loader>
+                    </v-card>
+                </v-col>
+                <v-col md="9" cols="12">
+                    <v-row>
+                        <v-card class="mt-3">
+                            <v-row no-gutters>
+                                <v-col cols="12" md="5">
+                                    <v-skeleton-loader type="image" height="400"></v-skeleton-loader>
+                                </v-col>
+                                <v-col cols="12" md="7">
+                                    <v-card-title>
+                                        <v-skeleton-loader type="text"></v-skeleton-loader>
+                                        <v-spacer></v-spacer>
+                                        <v-skeleton-loader type="chip"></v-skeleton-loader>
+                                    </v-card-title>
+                                    <v-card-text>
+                                        <v-row align="center" class="mx-0" >
+                                            <v-skeleton-loader type="text"></v-skeleton-loader>
+
+                                            <v-skeleton-loader type="text"></v-skeleton-loader>
+                                        </v-row>
+
+                                        <div class="my-4 subtitle-1">
+                                            <v-skeleton-loader type="text"></v-skeleton-loader>
+                                        </div>
+                                    </v-card-text>
+
+                                    <v-divider></v-divider>
+
+                                    <v-card-text>
+                                        <v-row dense>
+                                            <v-col cols="12">
+                                                <v-skeleton-loader type="table-row"></v-skeleton-loader>
+                                            </v-col>
+                                        </v-row>
+                                    </v-card-text>
+
+                                    <v-card-actions>
+                                    <v-skeleton-loader type="button"></v-skeleton-loader>
+                                    </v-card-actions>
+                                </v-col>
+                            </v-row>
+                        </v-card>
+                    </v-row>
+                </v-col>
+            </v-row>
+        </template>
+        <template v-else>
         <v-row>
             <v-col md="3" class="d-none d-md-block">
                 <kategori :active="active"></kategori>
@@ -53,6 +113,7 @@
                 </form>
             </v-col>
         </v-row>
+        </template>
     </v-container>
 </template>
 
@@ -63,6 +124,7 @@ export default {
   components: { Cart },
     data(){
         return{
+            first: true,
             loading: false,
             product: {},
             form: {
@@ -84,6 +146,7 @@ export default {
                 this.product = data.data.data;
                 this.harga = this.product.harga;
                 this.active = this.product.slug;
+                this.first = false;
             });
         },
         async cart(){

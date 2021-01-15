@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -25,12 +27,16 @@ class ProductController extends Controller
 
     public function search($category, $id)
     {
-        $result = $category != 'all'? Product::where('category', $category)
-                         ->where('nama_barang', 'like', "%$id%")
-                         ->orWhere('singkatan', 'like', "%$id%")
-                         ->get() : Product::where('nama_barang', 'like', "%$id%")
-                         ->orWhere('singkatan', 'like', "%$id%")
-                         ->get();
+        $result = Product::when($category != 'all', function ($query){
+                $category = explode('/', request()->getRequestUri())[4];
+                return $query->where('category', $category)->where(function ($query) {
+                    $id = explode('/', request()->getRequestUri())[5];
+                    $query->where('nama_barang', 'like', "%$id%")->orWhere('singkatan', 'like', "%$id%");
+                });
+            }, function($query) {
+                $id = explode('/', request()->getRequestUri())[5];
+                return $query->where('nama_barang', 'like', "%$id%")->orWhere('singkatan', 'like', "%$id%");
+            })->get();
         return ProductResource::collection($result);
     }
 
@@ -67,8 +73,40 @@ class ProductController extends Controller
             'type' => 'success'
         ]);
     }
-    
-    public function edit(){
-        return request ();
+
+    public function edit(Request $request){
+        $request->validate([
+            'nama' => 'required|string',
+            'singkatan' => 'required|max:11',
+            'harga' => 'required|numeric|min:0',
+            'kategori' => 'required'
+        ]);
+        $gambar = $request->file('gambar');
+        $oldName = Product::where('id_product', $request->id)->firstOrFail();
+        $oldName = $oldName->gambar;
+        if($gambar){
+            $eks = $gambar->getClientOriginalExtension();
+            $fileName = date('dmy-').uniqid().'.'.$eks;
+            $pictures = ['default.jpg', 'default1.jpg', 'default2.jpg', 'default3.jpg', 'default5.jpg'];
+            if(!in_array($oldName, $pictures)) unlink(public_path("img/barang/$oldName"));
+            $gambar->move(public_path('img/barang'), $fileName);
+            // $content = $gambar->getContent();
+            // Storage::disk('google')->put($fileName, $content);
+            // Storage::disk('google')->delete(Ghelper::getPathId($oldName));
+        }else{
+            $fileName = $oldName;
+        }
+        Product::where('id_product', $request->id)->update([
+            'nama_barang' => $request->nama,
+            'singkatan' => $request->singkatan,
+            'gambar' => $fileName,
+            'category' => $request->kategori,
+            'harga_barang' => $request->harga,
+            'detail_stok' => str_replace(',', '-', $request->detail)
+        ]);
+        return response()->json([
+            'message' => 'Barang berhasil di edit',
+            'type' => 'success'
+        ]);
     }
 }

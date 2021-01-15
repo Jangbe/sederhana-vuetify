@@ -1,9 +1,30 @@
 <template>
   <v-container>
+      <template v-if="first">
+          <v-row>
+              <v-skeleton-loader class="title col-4 mt-2" type="heading"></v-skeleton-loader>
+              <v-col cols="7" md="9" class="mt-6">
+                  <v-skeleton-loader type="text"></v-skeleton-loader>
+              </v-col>
+              <v-col cols="5" md="3" class="mt-6">
+                  <v-skeleton-loader type="text"></v-skeleton-loader>
+              </v-col>
+              <v-col cols="12" class="mt-4">
+                  <v-card>
+                      <v-skeleton-loader type="table-thead"></v-skeleton-loader>
+                      <v-skeleton-loader type="table-tbody@2"></v-skeleton-loader>
+                  </v-card>
+              </v-col>
+          </v-row>
+      </template>
+      <template v-else>
       <v-row v-if="!id_product">
           <div class="title col-12">Edit Barang</div>
-          <v-col cols="12">
+          <v-col cols="7" md="9">
               <v-text-field v-model="search" @keyup="cari()" hide-details="" label="cari barang.."></v-text-field>
+          </v-col>
+          <v-col cols="5" md="3">
+            <v-select :items="kategori2" @change="getProducts" v-model="kategori" hide-details="" label="Sort Kategori"></v-select>
           </v-col>
           <v-col cols="12">
                 <v-list>
@@ -86,6 +107,7 @@
             </v-form>
         </v-col>
       </v-row>
+      </template>
   </v-container>
 </template>
 
@@ -94,10 +116,13 @@ export default {
     props: ['id_product'],
     data(){
         return{
+            first: true,
             products: {},
             search: '',
             loading: false,
             hasErrors: {},
+            kategori: '',
+            kategori2: [],
             categories: [],
             category: [],
             input: {
@@ -115,8 +140,22 @@ export default {
             ],
         }
     },
+    beforeCreate(){
+        axios.get('/api/auth/init').then(data => {
+            if(!data.data.isAdmin){
+                this.$router.push('/auth/signin');
+            }
+        })
+    },
     mounted(){
         this.getProducts();
+        axios.get('/api/kategori/index').then(data => {
+            this.kategori2.push({text: 'Semua', value: ''});
+            for(let v in data.data){
+                this.kategori2.push({text: data.data[v].nama_kategori, value: data.data[v].slug});
+                this.categories.push({text: data.data[v].nama_kategori, value: data.data[v].slug});
+            }
+        });
         this.show();
     },
     watch: {
@@ -126,14 +165,10 @@ export default {
     },
     methods: {
         getProducts(){
-            axios.get('/api/product/index').then(data => {
+            axios.get(`/api/product/index/${this.kategori}`).then(data => {
                 this.products = data.data.data;
+                this.first = false
             })
-            axios.get('/api/kategori/index').then(data => {
-                for(let v in data.data){
-                    this.categories.push({text: data.data[v].nama_kategori, value: data.data[v].slug});
-                }
-            });
         },
         show(){
             if (this.id_product) {
@@ -143,7 +178,7 @@ export default {
                     this.input.nama = input.nama;
                     this.input.singkatan = input.singkatan;
                     this.input.harga = input.harga;
-                    this.input.kategori = {text: input.kategori, value: input.slug};
+                    this.input.kategori = input.slug;
                     this.input.oldGambar = input.gambar;
                     this.cek(input.slug, input.detail.split('-'));
                 })
@@ -151,7 +186,8 @@ export default {
         },
         cari(){
             if(this.search){
-                axios.get(`/api/product/search/all/${this.search}`).then(data => {
+                var kategori = this.kategori? this.kategori : 'all';
+                axios.get(`/api/product/search/${kategori}/${this.search}`).then(data => {
                     this.products = data.data.data;
                 })
             }else{
@@ -169,6 +205,7 @@ export default {
         add(){
             this.input.detail[this.category.length-1] = 1;
             var data = new FormData();
+            data.append('id', this.input.id);
             data.append('nama', this.input.nama);
             data.append('singkatan', this.input.singkatan);
             data.append('harga', this.input.harga);
@@ -181,7 +218,6 @@ export default {
             }
 
             axios.post('/api/admin/edit-product', data, config).then(res => {
-                console.log(res.data);
                 this.$swal.fire({
                     toast: true,
                     showConfirmButton: false,
@@ -191,6 +227,7 @@ export default {
                     timer: 3000,
                     timerProgressBar: true
                 })
+                this.$router.push('/admin/edit-product');
             }).catch(e => {
                 this.hasErrors = e.response.data.errors
             })
