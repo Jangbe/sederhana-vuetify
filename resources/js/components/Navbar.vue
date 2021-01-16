@@ -74,7 +74,7 @@
                     </v-list-item-group>
                 </v-list-group>
                 <v-divider></v-divider>
-                <cart class="transparent"></cart>
+                <cart class="transparent" :nav="true"></cart>
             </v-list-item-group>
         </v-list>
     </v-navigation-drawer>

@@ -7,6 +7,7 @@ use App\Models\Product;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -54,9 +55,9 @@ class ProductController extends Controller
         $detail = request('detail');
         $detail = str_replace(',', '-', $detail);
         $eks = $file->getClientOriginalExtension();
-        // $content = $file->getContent();
+        $content = $file->getContent();
         $fileName = date('dmy-').uniqid().'.'.$eks;;
-        // Storage::disk('google')->put($fileName, $content);
+        Storage::disk('google')->put($fileName, $content);
         $file->move(public_path('img/barang'), $fileName);
         Product::create([
             'id_product' => $id,
@@ -107,6 +108,15 @@ class ProductController extends Controller
         return response()->json([
             'message' => 'Barang berhasil di edit',
             'type' => 'success'
+        ]);
+    }
+    
+    public function destroy(Request $request)
+    {
+        Product::where('id_product', $request->id)->delete();
+        return response()->json([
+            'type' => 'success',
+            'message' => 'Barang berhasil dihapus'
         ]);
     }
 

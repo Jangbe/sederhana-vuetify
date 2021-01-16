@@ -40,8 +40,8 @@
                                     <v-row class="white--text">
                                         <v-col cols="1">#</v-col>
                                         <v-col cols="3" md="2">Gambar</v-col>
-                                        <v-col cols="4" md="7">Nama</v-col>
-                                        <v-col cols="4" md="2">Opsi</v-col>
+                                        <v-col cols="5" md="7">Nama</v-col>
+                                        <v-col cols="3" md="2">Opsi</v-col>
                                     </v-row>
                                 </v-list-item-content>
                             </v-list-item>
@@ -56,13 +56,13 @@
                                                     <v-img :src="`/img/barang/${product.gambar}`" width="80" alt="" :aspect-ratio="3/4" class="white--text align-end" gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"></v-img>
                                                 </v-card>
                                             </v-col>
-                                            <v-col cols="4" md="7">
+                                            <v-col cols="5" md="7" class="pl-2">
                                                 {{product.nama}}
                                                 <v-subheader v-text="product.kategori"></v-subheader>
                                             </v-col>
-                                            <v-col cols="4" md="2">
+                                            <v-col cols="3" md="2">
                                                 <v-btn small text color="warning" :to="{name: 'admin.edit', params: {id_product: product.id}}"><v-icon left>mdi-square-edit-outline</v-icon>Edit</v-btn>
-                                                <v-btn small text color="error"><v-icon left>mdi-delete</v-icon>Hapus</v-btn>
+                                                <v-btn small text color="error" @click="hapus(product.id)"><v-icon left>mdi-delete</v-icon>Hapus</v-btn>
                                             </v-col>
                                         </v-row>
                                     </v-list-item-content>
@@ -247,9 +247,36 @@ export default {
                     timer: 3000,
                     timerProgressBar: true
                 })
+                this.getProducts()
                 this.$router.push('/admin/edit-product');
             }).catch(e => {
                 this.hasErrors = e.response.data.errors
+            })
+        },
+        hapus(id){
+            this.$swal.fire({
+                title: 'Apakah kamu yakin?',
+                text: "Jika iya, tekan tombol 'Ya'!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                axios.post(`/api/admin/delete/`, {id: id}).then((respon) => {
+                    this.getProducts();
+                    this.$swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: respon.data.type,
+                        title: respon.data.message,
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true
+                    })
+                });
+                }
             })
         }
     }

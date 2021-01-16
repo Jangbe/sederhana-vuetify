@@ -35,6 +35,7 @@ Route::prefix('admin')->middleware('role:1')->group(function(){
     Route::post('product', [ProductController::class, 'store']);
     Route::post('edit-product', [ProductController::class, 'edit']);
     Route::post('add-stok', [ProductController::class, 'add_stok']);
+    Route::post('delete', [ProductController::class, 'destroy']);
 });
 
 Route::prefix('auth')->group(function(){

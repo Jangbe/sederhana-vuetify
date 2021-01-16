@@ -116,6 +116,14 @@ export default {
                     timer: 3000,
                     timerProgressBar: true
                 });
+                this.input = {
+                    nama: '',
+                    singkatan: '',
+                    gambar: {},
+                    harga: '',
+                    kategori: '',
+                    detail: []
+                }
             }catch(e){this.hasErrors = e.response.data.errors}
         }
     }

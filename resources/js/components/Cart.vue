@@ -1,5 +1,5 @@
 <template>
-  <v-card tile>
+  <v-card tile :elevation="nav? 0 : 2">
     <v-list-group prepend-icon="mdi-cart-arrow-right" value="true">
       <template v-slot:activator><v-list-item-title>Keranjang</v-list-item-title></template>
       <v-divider></v-divider>
@@ -41,6 +41,7 @@
 <script>
 import number_format from '../number_format';
 export default {
+    props: ['nav'],
     data(){
         return{
             number_format
