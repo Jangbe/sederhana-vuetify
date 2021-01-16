@@ -9,10 +9,10 @@ import Struct from '../views/admin/Struct';
 import Category from '../views/admin/Category';
 import Create from '../views/admin/Create';
 import Edit from '../views/admin/Edit';
+import Stok from '../views/admin/Stok';
 
 //For user's components
 import Index from '../views/products/Index';
-import Show from '../views/products/Show';
 import Cart from '../views/carts/Cart';
 
 //For auth's components
@@ -65,6 +65,12 @@ export default{
             component: Edit,
             props: true
         },
+        {
+            path: "/admin/add-stok/:id_product?",
+            name: 'admin.stok',
+            component: Stok,
+            props: true
+        },
 
         //For authenticated or not
         {
@@ -89,15 +95,10 @@ export default{
 
         //For user logged in and not yet
         {
-            path: "/belanja/:category?",
+            path: "/belanja/:category?/:id?",
             name: 'product',
             component: Index,
             props: true
-        },
-        {
-            path: "/belanja/:category/:id",
-            name: 'product.detail',
-            component: Show
         },
         {
             path: "/keranjang",

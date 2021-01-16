@@ -1,17 +1,22 @@
 <template>
   <v-container>
-      <template v-if="first">
+      <not-found v-if="notFound"></not-found>
+      <stok-loader v-else-if="first && load"></stok-loader>
+      <template v-else-if="first">
           <v-row>
-              <v-skeleton-loader class="title col-4 mt-2" type="heading"></v-skeleton-loader>
-              <v-col cols="7" md="9" class="mt-6">
+              <v-col cols="12" class="mt-2">
+                  <v-skeleton-loader class="title" width="300" type="heading"></v-skeleton-loader>
+              </v-col>
+              <v-col cols="7" md="9" class="mt-7">
                   <v-skeleton-loader type="text"></v-skeleton-loader>
               </v-col>
-              <v-col cols="5" md="3" class="mt-6">
+              <v-col cols="5" md="3" class="mt-7">
                   <v-skeleton-loader type="text"></v-skeleton-loader>
               </v-col>
-              <v-col cols="12" class="mt-4">
+              <v-col cols="12" class="mt-2">
                   <v-card>
                       <v-skeleton-loader type="table-thead"></v-skeleton-loader>
+                      <v-divider></v-divider>
                       <v-skeleton-loader type="table-tbody@2"></v-skeleton-loader>
                   </v-card>
               </v-col>
@@ -34,8 +39,8 @@
                                 <v-list-item-content>
                                     <v-row class="white--text">
                                         <v-col cols="1">#</v-col>
-                                        <v-col cols="3">Gambar</v-col>
-                                        <v-col cols="4" md="3">Nama</v-col>
+                                        <v-col cols="3" md="2">Gambar</v-col>
+                                        <v-col cols="4" md="7">Nama</v-col>
                                         <v-col cols="4" md="2">Opsi</v-col>
                                     </v-row>
                                 </v-list-item-content>
@@ -46,8 +51,12 @@
                                     <v-list-item-content>
                                         <v-row no-gutters>
                                             <v-col cols="1" v-text="k+1"></v-col>
-                                            <v-col cols="3"><v-img :src="`/img/barang/${product.gambar}`" width="80" alt="" :aspect-ratio="3/4"></v-img></v-col>
-                                            <v-col cols="4" md="3">
+                                            <v-col cols="3" md="2">
+                                                <v-card width="80">
+                                                    <v-img :src="`/img/barang/${product.gambar}`" width="80" alt="" :aspect-ratio="3/4" class="white--text align-end" gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"></v-img>
+                                                </v-card>
+                                            </v-col>
+                                            <v-col cols="4" md="7">
                                                 {{product.nama}}
                                                 <v-subheader v-text="product.kategori"></v-subheader>
                                             </v-col>
@@ -66,7 +75,8 @@
       </v-row>
       <v-row v-else>
           <v-col cols="12">
-            <v-form action="#" method="post" role="form" @submit.prevent="add" lazy-validation>
+            <stok-loader v-if="load"></stok-loader>
+            <v-form v-else action="#" method="post" role="form" @submit.prevent="add" lazy-validation>
             <v-card :loading="loading">
                 <v-row no-gutters>
                     <v-col cols="12" md="4">
@@ -112,7 +122,10 @@
 </template>
 
 <script>
+import notFound from './../404.vue';
+import StokLoader from './StokLoader.vue';
 export default {
+    components: {'not-found': notFound, 'stok-loader': StokLoader},
     props: ['id_product'],
     data(){
         return{
@@ -120,11 +133,13 @@ export default {
             products: {},
             search: '',
             loading: false,
+            load: false,
             hasErrors: {},
             kategori: '',
             kategori2: [],
             categories: [],
             category: [],
+            notFound: false,
             input: {
                 id: '',
                 nama: '',
@@ -172,6 +187,7 @@ export default {
         },
         show(){
             if (this.id_product) {
+                this.load = true;
                 axios.get(`/api/product/index/${this.id_product}/show`).then(res => {
                     var input = res.data.data;
                     this.input.id = input.id;
@@ -181,6 +197,10 @@ export default {
                     this.input.kategori = input.slug;
                     this.input.oldGambar = input.gambar;
                     this.cek(input.slug, input.detail.split('-'));
+                    this.load = false;
+                }).catch(e => {
+                    this.load = false;
+                    this.notFound = true;
                 })
             }
         },

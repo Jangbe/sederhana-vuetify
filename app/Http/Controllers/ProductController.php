@@ -109,4 +109,22 @@ class ProductController extends Controller
             'type' => 'success'
         ]);
     }
+
+    public function add_stok(Request $request)
+    {
+        $jumlah = Product::convertStok($request);
+        if($jumlah['hasil'] < 1){
+            return response()->json([
+                'type' => 'error',
+                'message' => 'Stok barang gagal ditambahkan'
+            ]);
+        }
+        Product::where('id_product', $request->id)->update([
+            'stok' => ($jumlah['stok'] + $jumlah['hasil'])
+        ]);
+        return response()->json([
+            'type' => 'success',
+            'message' => 'Stok barang telah ditambahkan'
+        ]);
+    }
 }

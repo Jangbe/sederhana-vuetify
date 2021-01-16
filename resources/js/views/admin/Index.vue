@@ -1,6 +1,34 @@
 <template>
 <v-container>
-    <v-row v-if="!id_buyer">
+    <v-row v-if="first">
+        <v-col cols="12" md="8" class="mt-2">
+            <v-list>
+                <v-card>
+                    <v-list-item>
+                        <v-list-item-title>
+                            <v-skeleton-loader width="300" type="heading"></v-skeleton-loader>
+                        </v-list-item-title>
+                    </v-list-item>
+                    <v-divider></v-divider>
+                    <v-skeleton-loader type="list-item@10"></v-skeleton-loader>
+                </v-card>
+            </v-list>
+        </v-col>
+        <v-col cols="12" md="4" class="mt-2">
+            <v-list>
+                <v-card>
+                    <v-list-item>
+                        <v-list-item-title>
+                            <v-skeleton-loader width="330" type="heading"></v-skeleton-loader>
+                        </v-list-item-title>
+                    </v-list-item>
+                    <v-divider></v-divider>
+                    <v-skeleton-loader type="list-item@4"></v-skeleton-loader>
+                </v-card>
+            </v-list>
+        </v-col>
+    </v-row>
+    <v-row v-else-if="!id_buyer">
         <v-col cols="12" md="8">
             <v-list>
                 <v-card>
@@ -61,7 +89,7 @@
         </v-col>
     </v-row>
     <v-row v-if="id_buyer">
-        <v-col cols="12" md="7">
+        <v-col cols="12" md="8">
             <v-list disabled>
                 <v-card>
                     <v-list-item-group>
@@ -105,7 +133,7 @@
             </v-card>
                 </v-list>
         </v-col>
-        <v-col cols="12" md="5">
+        <v-col cols="12" md="4">
             <v-list>
                 <v-card>
                     <v-list-item class="light-blue"><v-list-item-title class="white--text">Info pembeli</v-list-item-title></v-list-item>
@@ -131,6 +159,7 @@ export default {
     props: ['id_buyer'],
     data(){
         return{
+            first: true,
             carts: {},
             number_format,
             info_pesan: ['red', 'warning', 'primary', 'success']
@@ -138,6 +167,7 @@ export default {
     },
     watch: {
         id_buyer: function(){
+            this.first = true;
             this.getCarts();
         }
     },
@@ -161,6 +191,7 @@ export default {
             var id_buyer = this.id_buyer ? this.id_buyer : '';
             var response = await axios.get(`/api/admin/getCarts/${id_buyer}`);
             this.carts = response.data.data;
+            this.first = false;
         }
     }
 }

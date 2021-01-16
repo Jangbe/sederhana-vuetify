@@ -2,7 +2,7 @@
     <v-container class="mt-3">
         <template v-if="first">
             <v-row>
-                <v-col cols="12" class="mt-3">
+                <v-col cols="12" class="mt-3" v-if="!id">
                     <v-skeleton-loader type="text"></v-skeleton-loader>
                 </v-col>
                 <v-col cols="12" md="3" class="d-none d-md-block">
@@ -18,17 +18,18 @@
                     </v-card>
                 </v-col>
                 <v-col md="9" cols="12">
-                    <v-row>
+                    <v-row v-if="!id">
                         <v-col cols="6" md="3" v-for="i in 12" :key="i">
                             <v-skeleton-loader type="image"></v-skeleton-loader>
                         </v-col>
                     </v-row>
+                    <show-loader v-else></show-loader>
                 </v-col>
             </v-row>
         </template>
         <template v-else>
         <v-row>
-            <v-col cols="12">
+            <v-col cols="12" v-if="!id">
                 <v-text-field dense hide-details="" outlined rounded v-model="vsearch" @keyup="search" append-icon="mdi-magnify" label="Cari barang" @click:append="search()"></v-text-field>
             </v-col>
             <v-col md="3" cols="12" class="d-none d-md-block">
@@ -36,12 +37,17 @@
                 <cart></cart>
             </v-col>
             <v-col md="9" cols="12">
-                <v-row>
-                    <template v-if="products.length > 0">
+                <v-row v-if="!id">
+                    <template v-if="load">
+                        <v-col cols="6" md="3" v-for="i in 12" :key="i">
+                            <v-skeleton-loader type="image"></v-skeleton-loader>
+                        </v-col>
+                    </template>
+                    <template v-else-if="products.length > 0">
                     <v-col cols="6" md="3" v-for="product in products" :key="product.id">
                             <v-card>
-                                <router-link :to="{name: 'product.detail', params: {id: product.id, category: product.slug}}" style="text-decoration: none">
-                                    <v-img :src="`/img/barang/${product.gambar}`" class="white--text align-end" gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)" height="200px" >
+                                <router-link :to="{name: 'product', params: {id: product.id, category: product.slug}}" style="text-decoration: none">
+                                    <v-img :src="`/img/barang/${product.gambar}`" class="white--text align-end" gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)" height="200">
                                     <v-card-title v-text="product.nama"></v-card-title>
                                     </v-img>
                                 </router-link>
@@ -69,6 +75,7 @@
                         </v-col>
                     </template>
                 </v-row>
+                <show v-else></show>
             </v-col>
         </v-row>
         </template>
@@ -77,11 +84,15 @@
 
 <script>
 import Category from '../../components/Category.vue';
+import Show from './Show.vue';
+import Loader from './ShowLoader.vue';
 export default {
-    props: ['category'],
+    components: {Show, 'show-loader': Loader},
+    props: ['category', 'id'],
     data(){
         return{
             first: true,
+            load: false,
             products: {},
             active: '',
             vsearch: ''
@@ -89,6 +100,7 @@ export default {
     },
     watch:{
         category: function (){
+            this.load = true;
             this.getProducts();
         }
     },
@@ -103,6 +115,7 @@ export default {
             axios.get(`/api/product/index/${category}`).then((response) => {
                 this.products = response.data.data;
                 this.first = false;
+                this.load = false;
             });
         },
         search(){

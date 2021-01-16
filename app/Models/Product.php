@@ -42,6 +42,7 @@ class Product extends Model
                 $detail[$detail_nama[$i]] *= $detail_stok[$a-1];
             }
         }
+        $data['stok'] = $produk->stok;
         $data['hasil'] = 0;
         $i = 0;
         foreach($data->detail as $key => $value){

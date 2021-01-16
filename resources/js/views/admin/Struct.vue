@@ -1,6 +1,7 @@
 <template>
 <v-container>
-<v-row>
+<struct-loader v-if="first"></struct-loader>
+<v-row v-else>
     <v-col cols="12" md="8">
         <v-text-field type="text" v-model="word" @keyup="search" hide-details="" placeholder="cari nama barang..." class="mb-3"></v-text-field>
         <v-list class="list-group mb-2 barang">
@@ -50,11 +51,14 @@
 
 <script>
 import Cart from '../../components/Cart.vue';
+import Loader from './StructLoader.vue';
 import number_format from '../../number_format';
 export default {
+    components: {'struct-loader': Loader},
     props: ['page'],
     data(){
         return {
+            first: true,
             products: {},
             form: {},
             number_format,
@@ -83,14 +87,16 @@ export default {
         }
     },
     methods: {
-        async getProducts(page = this.page){
-            var data = await axios.get(`/api/admin/struct?page=${page}`)
-            this.products = data.data.data;
-            for(var i in this.products){
-                this.form[this.products[i].id] = { id: '', detail: {},};
-            }
-            this.link = data.data.links;
-            this.meta = data.data.meta;
+        getProducts(page = this.page){
+            axios.get(`/api/admin/struct?page=${page}`).then(data => {
+                this.products = data.data.data;
+                for(var i in this.products){
+                    this.form[this.products[i].id] = { id: '', detail: {},};
+                }
+                this.link = data.data.links;
+                this.meta = data.data.meta;
+                this.first = false;
+            });
             this.number_format = number_format;
         },
         async cart(id){

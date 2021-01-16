@@ -55,20 +55,26 @@
     <!-- Untuk drawer kategori -->
     <v-navigation-drawer temporary app right v-model="dcategory" color="cyan" dark>
         <v-list nav>
-            <v-list-item>
-                <v-list-item-icon>
-                    <v-icon>mdi-shape</v-icon>
-                </v-list-item-icon>
-                <v-list-item-title>Kategori</v-list-item-title>
-            </v-list-item>
-            <v-divider></v-divider>
-            <v-list-item-group>
-                <v-list-item :to="{name: 'product'}">
-                    <v-list-item-title>Semua</v-list-item-title>
-                </v-list-item>
-                <v-list-item v-for="(categori, i) in categories" :to="{name: 'product', params: {category: categori.slug}}" :key="i">
-                    <v-list-item-title v-text="categori.nama_kategori"></v-list-item-title>
-                </v-list-item>
+            <v-list-item-group active-class="black--text text--accent-4">
+                <v-list-group value="true">
+                    <template v-slot:activator>
+                        <v-list-item-icon class="white--text">
+                            <v-icon>mdi-shape</v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-title class="white--text">Kategori</v-list-item-title>
+                    </template>
+                    <v-divider></v-divider>
+                    <v-list-item-group active-class="black--text text--accent-4">
+                        <v-list-item :to="{name: 'product'}" exact>
+                            <v-list-item-title>Semua</v-list-item-title>
+                        </v-list-item>
+                        <v-list-item v-for="(categori, i) in categories" :to="{name: 'product', params: {category: categori.slug}}" :key="i">
+                            <v-list-item-title v-text="categori.nama_kategori"></v-list-item-title>
+                        </v-list-item>
+                    </v-list-item-group>
+                </v-list-group>
+                <v-divider></v-divider>
+                <cart class="transparent"></cart>
             </v-list-item-group>
         </v-list>
     </v-navigation-drawer>
@@ -148,7 +154,9 @@
 </nav>
 </template>
 <script>
+import Cart from './Cart.vue';
 export default{
+  components: { Cart },
     data(){
         return{
             drawer: false,
