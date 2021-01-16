@@ -53,7 +53,7 @@
                                             <v-col cols="1" v-text="k+1"></v-col>
                                             <v-col cols="3" md="2">
                                                 <v-card width="80">
-                                                    <v-img :src="`/img/barang/${product.gambar}`" width="80" alt="" :aspect-ratio="3/4" class="white--text align-end" gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"></v-img>
+                                                    <v-img :src="product.link" width="80" alt="" :aspect-ratio="3/4" class="white--text align-end" gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"></v-img>
                                                 </v-card>
                                             </v-col>
                                             <v-col cols="5" md="7" class="pl-2">
@@ -80,7 +80,7 @@
             <v-card :loading="loading">
                 <v-row no-gutters>
                     <v-col cols="12" md="4">
-                        <v-img height="430" :src="`/img/barang/${input.oldGambar}`"></v-img>
+                        <v-img height="430" :src="input.oldGambar"></v-img>
                     </v-col>
                     <v-col cols="12" md="4">
                         <v-card-title>
@@ -131,6 +131,7 @@ export default {
         return{
             first: true,
             products: {},
+            product: {},
             search: '',
             loading: false,
             load: false,
@@ -195,7 +196,7 @@ export default {
                     this.input.singkatan = input.singkatan;
                     this.input.harga = input.harga;
                     this.input.kategori = input.slug;
-                    this.input.oldGambar = input.gambar;
+                    this.input.oldGambar = input.link;
                     this.cek(input.slug, input.detail.split('-'));
                     this.load = false;
                 }).catch(e => {

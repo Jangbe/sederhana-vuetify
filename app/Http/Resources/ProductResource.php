@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class ProductResource extends JsonResource
 {
@@ -14,6 +15,25 @@ class ProductResource extends JsonResource
      * @param  \Illuminate\Http\Request  $request
      * @return array
      */
+
+    public function gHelper($return){
+        $data = collect(Storage::disk('google')->listContents());
+        $path = $data->where('name', $this->gambar)->first();
+        if($path){
+           $path = $path['path'];
+           $result = [
+               'link' => "https://drive.google.com/uc?id=$path",
+               'path' => env('GOOGLE_DRIVE_FOLDER_ID').'/'.$path
+           ];
+        }else{
+            $result = [
+                'link' => '/img/barang/default.jpg',
+                'path' => ''
+            ];
+        }
+        return $result[$return];
+    }
+
     public function toArray($request)
     {
         $kategori = Product::join('categories', 'categories.slug', 'products.category')->where('categories.slug', $this->category)->first();
@@ -22,8 +42,6 @@ class ProductResource extends JsonResource
         for($i = 0; $i < count($nama); $i++){
             $detail[$nama[$i]] = $stok[$i];
         }
-
-        // dd($request);
 
         return [
             'id' => $this->id_product,
@@ -36,7 +54,9 @@ class ProductResource extends JsonResource
             'gambar' => $this->gambar,
             'kategori' => $kategori->nama_kategori,
             'slug' => $kategori->slug,
-            'detail' => $this->detail_stok
+            'detail' => $this->detail_stok,
+            'link' => $this->gHelper('link'),
+            'path' => $this->gHelper('path')
         ];
     }
 

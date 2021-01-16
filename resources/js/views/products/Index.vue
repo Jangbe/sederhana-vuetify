@@ -47,7 +47,7 @@
                     <v-col cols="6" md="3" v-for="product in products" :key="product.id">
                             <v-card>
                                 <router-link :to="{name: 'product', params: {id: product.id, category: product.slug}}" style="text-decoration: none">
-                                    <v-img :src="`/img/barang/${product.gambar}`" class="white--text align-end" gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)" height="200">
+                                    <v-img :src="product.link" class="white--text align-end" gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)" height="200">
                                     <v-card-title v-text="product.nama"></v-card-title>
                                     </v-img>
                                 </router-link>

@@ -52,7 +52,7 @@
                                             <v-col cols="1" v-text="k+1"></v-col>
                                             <v-col cols="3" md="2">
                                                 <v-card width="80">
-                                                    <v-img :src="`/img/barang/${product.gambar}`" width="80" alt="" :aspect-ratio="3/4" class="white--text align-end" gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"></v-img>
+                                                    <v-img :src="product.link" width="80" alt="" :aspect-ratio="3/4" class="white--text align-end" gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"></v-img>
                                                 </v-card>
                                             </v-col>
                                             <v-col cols="5" md="7">

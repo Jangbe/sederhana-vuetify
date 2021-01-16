@@ -5,7 +5,7 @@
         <v-card :loading="loading">
             <v-row no-gutters>
                 <v-col cols="12" md="4">
-                    <v-img height="430" :src="`/img/barang/${input.gambar}`"></v-img>
+                    <v-img height="430" :src="input.gambar"></v-img>
                 </v-col>
                 <v-col cols="12" md="4">
                     <v-card-title>
@@ -78,7 +78,7 @@ export default {
                 this.detail = input.stok;
                 this.input.id = input.id;
                 this.input.nama = input.nama;
-                this.input.gambar = input.gambar;
+                this.input.gambar = input.link;
                 this.input.stok = input.stok_kata;
                 this.first = false;
             }).catch(e => {

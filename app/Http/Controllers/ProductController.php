@@ -58,7 +58,7 @@ class ProductController extends Controller
         $content = $file->getContent();
         $fileName = date('dmy-').uniqid().'.'.$eks;;
         Storage::disk('google')->put($fileName, $content);
-        $file->move(public_path('img/barang'), $fileName);
+        // $file->move(public_path('img/barang'), $fileName);
         Product::create([
             'id_product' => $id,
             'nama_barang' => $request->nama,
@@ -83,17 +83,16 @@ class ProductController extends Controller
             'kategori' => 'required'
         ]);
         $gambar = $request->file('gambar');
-        $oldName = Product::where('id_product', $request->id)->firstOrFail();
-        $oldName = $oldName->gambar;
+        $oldName = ProductResource::make(Product::where('id_product', $request->id));
         if($gambar){
             $eks = $gambar->getClientOriginalExtension();
             $fileName = date('dmy-').uniqid().'.'.$eks;
-            $pictures = ['default.jpg', 'default1.jpg', 'default2.jpg', 'default3.jpg', 'default5.jpg'];
-            if(!in_array($oldName, $pictures)) unlink(public_path("img/barang/$oldName"));
-            $gambar->move(public_path('img/barang'), $fileName);
-            // $content = $gambar->getContent();
-            // Storage::disk('google')->put($fileName, $content);
-            // Storage::disk('google')->delete(Ghelper::getPathId($oldName));
+            // $pictures = ['default.jpg', 'default1.jpg', 'default2.jpg', 'default3.jpg', 'default5.jpg'];
+            // if(!in_array($oldName, $pictures)) unlink(public_path("img/barang/$oldName"));
+            // $gambar->move(public_path('img/barang'), $fileName);
+            $content = $gambar->getContent();
+            Storage::disk('google')->put($fileName, $content);
+            Storage::disk('google')->delete($oldName->path);
         }else{
             $fileName = $oldName;
         }
@@ -110,10 +109,12 @@ class ProductController extends Controller
             'type' => 'success'
         ]);
     }
-    
+
     public function destroy(Request $request)
     {
-        Product::where('id_product', $request->id)->delete();
+        $gambar = ProductResource::make(Product::where('id_product', $request->id));
+        Storage::disk('google')->delete($gambar->path);
+        $gambar->delete();
         return response()->json([
             'type' => 'success',
             'message' => 'Barang berhasil dihapus'

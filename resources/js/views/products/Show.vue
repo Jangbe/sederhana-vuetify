@@ -5,7 +5,7 @@
             <v-card :loading="loading">
                 <v-row no-gutters>
                     <v-col cols="12" md="5">
-                        <v-img max-height="400" :src="`/img/barang/${product.gambar}`"></v-img>
+                        <v-img max-height="400" :src="product.link"></v-img>
                     </v-col>
                     <v-col cols="12" md="7">
                         <v-card-title>
@@ -83,6 +83,7 @@ export default {
                 this.harga = this.product.harga;
                 this.active = this.product.slug;
                 this.first = false;
+            console.log(this.product);
             }).catch(e => {
                 this.first = false;
                 this.notFound = true;
