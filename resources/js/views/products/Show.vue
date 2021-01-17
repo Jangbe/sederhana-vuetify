@@ -38,8 +38,9 @@
                         </v-card-text>
 
                         <v-card-actions>
-                        <v-btn color="primary" text type="submit">
-                            <v-icon left>mdi-cart-arrow-down</v-icon>Tambahkan Ke Keranjang
+                        <v-btn color="primary" text type="submit" :disabled="loading">
+                            <v-progress-circular color="primary" indeterminate v-if="loading"></v-progress-circular>
+                            <span v-else><v-icon left>mdi-cart-arrow-down</v-icon>Tambahkan Ke Keranjang</span>
                         </v-btn>
                         </v-card-actions>
                     </v-col>

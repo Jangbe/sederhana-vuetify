@@ -33,7 +33,10 @@
                     </v-card-text>
                     <v-divider class="d-flex d-md-none"></v-divider>
                     <v-card-text>
-                        <v-btn color="success" type="submit" text><v-icon left>mdi-plus-circle</v-icon>Tambah Stok</v-btn>
+                        <v-btn color="success" type="submit" text :disabled="loading">
+                            <v-progress-circular indeterminate color="success" v-if="loading"></v-progress-circular>
+                            <span v-else><v-icon left>mdi-plus-circle</v-icon>Tambah Stok</span>
+                        </v-btn>
                     </v-card-text>
                 </v-col>
             </v-row>
@@ -90,6 +93,7 @@ export default {
                 id: this.input.id,
                 detail: this.input.detail
             }
+            this.loading = true;
             axios.post('/api/admin/add-stok', data).then(res => {
                 this.$swal.fire({
                     toast: true,
@@ -103,7 +107,9 @@ export default {
                 if (res.data.type == 'success') {
                     this.$router.push('/admin/add-stok');
                 }
+                this.loading = false;
             }).catch(e => {
+                this.loading = false;
                 this.hasErrors = e.response.data.errors
             })
         }

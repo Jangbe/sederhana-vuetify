@@ -107,8 +107,9 @@
                             <template v-for="(v, k) in category">
                                 <v-text-field outlined type="number" min="0" v-if="k +1 != category.length" :key="k" v-model="input.detail[k]" :label="`1 ${v} berisi .. ${category[k+1]}`"></v-text-field>
                             </template>
-                            <v-btn bottom color="primary" text type="submit">
-                                <v-icon left>mdi-pen</v-icon>Edit Barang
+                            <v-btn bottom color="primary" text type="submit" :disabled="loading">
+                                <v-progress-circular color="primary" indeterminate v-if="loading"></v-progress-circular>
+                                <span v-else><v-icon left>mdi-pen</v-icon>Edit Barang</span>
                             </v-btn>
                         </v-card-text>
                     </v-col>
@@ -238,6 +239,7 @@ export default {
                 headers: {'content-type': 'multipart/form-data'}
             }
 
+            this.loading = true;
             axios.post('/api/admin/edit-product', data, config).then(res => {
                 this.$swal.fire({
                     toast: true,
@@ -249,8 +251,10 @@ export default {
                     timerProgressBar: true
                 })
                 this.getProducts()
+                this.loading = false;
                 this.$router.push('/admin/edit-product');
             }).catch(e => {
+                this.loading = false;
                 this.hasErrors = e.response.data.errors
             })
         },

@@ -19,7 +19,10 @@
                             <v-textarea hide-details="" outlined v-model="input.catatan" label="Catatan"></v-textarea>
                         </v-col>
                     </v-row>
-                    <v-btn color="success" outlined class="col-12 text-center mt-3" type="submit">Kirim ke keranjang</v-btn>
+                    <v-btn color="success" outlined class="col-12 text-center mt-3" type="submit" :disabled="loading">
+                        <v-progress-circular color="success" indeterminate v-if="loading"></v-progress-circular>
+                        <span v-else><v-icon left>mdi-cart-check</v-icon>Kirim ke keranjang</span>
+                    </v-btn>
                 </v-form>
                 <v-alert v-else class="text-center" color="warning" outlined>
                     <span class="text-center">Keranjang masih kosong, silahkan pilih dulu barang jika ingin berbelanja</span>
@@ -46,6 +49,7 @@ export default {
     data(){
         return{
             isThere: false,
+            loading: false,
             input: {
                 nama: '',
                 email: '',
@@ -96,6 +100,7 @@ export default {
         },
 
         async store(){
+            this.loading = true;
             try{
                 this.input.carts = this.carts;
                 let respon = await axios.patch('/api/keranjang/store', this.input);
@@ -115,8 +120,10 @@ export default {
                     '<v-icon>mdi-thumbs-up</v-icon> Confirm!',
                     confirmButtonAriaLabel: 'Thumbs up, great!',
                 })
+                this.loading = false;
                 this.$router.push('/belanja');
             }catch(e){
+                this.loading = false;
                 this.hasErrors = e.response.data.errors;
             }
         }

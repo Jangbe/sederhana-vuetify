@@ -3,7 +3,7 @@
       <v-row>
             <v-col cols="12">
                 <v-form action="#" method="post" role="form" @submit.prevent="add" lazy-validation>
-                <v-card :loading="loading">
+                <v-card :loading="load">
                     <v-row no-gutters>
                         <v-col cols="12" md="4">
                             <v-img height="430" :src="`/img/barang/default.jpg`"></v-img>
@@ -33,8 +33,9 @@
                                 <template v-for="(v, k) in category">
                                     <v-text-field outlined type="number" min="0" v-if="k +1 != category.length" :key="k" v-model="input.detail[k]" :label="`1 ${v} berisi .. ${category[k+1]}`"></v-text-field>
                                 </template>
-                                <v-btn bottom color="primary" text type="submit">
-                                    <v-icon left>mdi-plus-circle</v-icon>Tambahkan Barang
+                                <v-btn bottom color="primary" text type="submit" :disabled="load">
+                                    <v-progress-circular v-if="load" color="primary" indeterminate size="20"></v-progress-circular>
+                                    <span v-else><v-icon left>mdi-plus-circle</v-icon>Tambahkan Barang</span>
                                 </v-btn>
                             </v-card-text>
                         </v-col>
@@ -60,6 +61,7 @@ export default {
             },
             hasErrors: {},
             loading: false,
+            load: false,
             categories: [],
             category: [],
             rules: [
@@ -92,6 +94,7 @@ export default {
             })
         },
         async add(){
+            this.load = true;
             this.input.detail[this.category.length-1] = 1;
             try{
                 var data = new FormData();
@@ -124,7 +127,8 @@ export default {
                     kategori: '',
                     detail: []
                 }
-            }catch(e){this.hasErrors = e.response.data.errors}
+                this.load = false;
+            }catch(e){this.hasErrors = e.response.data.errors; this.load = false;}
         }
     }
 }
