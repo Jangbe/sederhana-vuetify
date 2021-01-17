@@ -6,6 +6,16 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Resources\ProductResource;
+use App\Models\Product;
+
+Route::get('cek', function(){
+    $data = ProductResource::make(Product::where('id_product','PD0001')->first());
+    $data= json_encode($data);
+    //https://drive.google.com/file/d/1BfXyzTP6hhhNGoH10WZZmWF3ZPHBfbyI/view?usp=drivesdk
+    //Storage::disk('google')->delete('1-Qv4ReuXnXyKw1AogXtIn2MAirrkvJp8/1BfXyzTP6hhhNGoH10WZZmWF3ZPHBfbyI');
+    dd(json_decode($data)->path);
+});
 
 Route::prefix('product')->group(function(){
     Route::get('index/{category?}', [ProductController::class,'index']);

@@ -83,7 +83,7 @@ class ProductController extends Controller
             'kategori' => 'required'
         ]);
         $gambar = $request->file('gambar');
-        $oldName = ProductResource::make(Product::where('id_product', $request->id));
+        $oldName = $this->gHelper($request->id);
         if($gambar){
             $eks = $gambar->getClientOriginalExtension();
             $fileName = date('dmy-').uniqid().'.'.$eks;
@@ -94,7 +94,7 @@ class ProductController extends Controller
             Storage::disk('google')->put($fileName, $content);
             Storage::disk('google')->delete($oldName->path);
         }else{
-            $fileName = $oldName;
+            $fileName = $oldName->gambar;
         }
         Product::where('id_product', $request->id)->update([
             'nama_barang' => $request->nama,
@@ -112,13 +112,20 @@ class ProductController extends Controller
 
     public function destroy(Request $request)
     {
-        $gambar = ProductResource::make(Product::where('id_product', $request->id));
+        $gambar = $this->gHelper($request->id);
         Storage::disk('google')->delete($gambar->path);
-        $gambar->delete();
+        Product::where('id_product', $request->id)->delete();
         return response()->json([
             'type' => 'success',
             'message' => 'Barang berhasil dihapus'
         ]);
+    }
+    
+    private function gHelper($id, $return = null)
+    {
+        $data = ProductResource::make(Product::where('id_product', $id)->first());
+        $data = json_decode(json_encode($data));
+        return $return? $data[$return] : $data;
     }
 
     public function add_stok(Request $request)
